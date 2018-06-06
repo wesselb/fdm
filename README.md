@@ -1,4 +1,4 @@
-# FDM: Finite Difference Methods
+# [FDM: Finite Difference Methods](http://github.com/wesselb/fdm)
 
 [![Build](https://travis-ci.org/wesselb/fdm.svg?branch=master)](https://travis-ci.org/wesselb/fdm)
 [![Coverage Status](https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master)](https://coveralls.io/github/wesselb/fdm?branch=master)

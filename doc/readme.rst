@@ -1,5 +1,5 @@
-FDM: Finite Difference Methods
-==============================
+`FDM: Finite Difference Methods <http://github.com/wesselb/fdm>`__
+==================================================================
 
 |Build| |Coverage Status| |Latest Docs|
 
