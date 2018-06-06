@@ -15,7 +15,7 @@ def approx_equal(x, y,
     """Check whether `x` and `y` are approximately equal.
 
     Let `eps_z = eps_abs / eps_rel`. Call `x` and `y` small if
-    `abs(x) + abs(y) < eps_z`, and call `x`and `y` large otherwise. If this
+    `abs(x) + abs(y) < eps_z`, and call `x` and `y` large otherwise. If this
     function returns `True`, then it is guaranteed that
     `abs(x - y) < 2eps_rel * (abs(x) + abs(y))` if `x` and `y` are large, and
     `abs(x - y) < 2eps_abs` if `x` and `y` are small.
