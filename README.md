@@ -53,3 +53,5 @@ fifth-order method.
 ```
 
 Hooray!
+
+Moar? See the [docs](https://fdm-docs.readthedocs.io/en/latest)!
