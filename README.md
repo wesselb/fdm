@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master)](https://coveralls.io/github/wesselb/fdm?branch=master)
 [![Latest Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://fdm-docs.readthedocs.io/en/latest)
 
-Compute derivatives with finite difference methods
+FDM estimates derivatives with finite differences.
 
 See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
