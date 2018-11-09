@@ -16,7 +16,7 @@ setup(
     description='Compute derivatives with finite-difference methods',
     long_description=readme,
     author='Wessel Bruinsma',
-    author_email='skeleton_author_email',
+    author_email='wessel.p.bruinsma@gmail.com',
     url='https://github.com/wesselb/fdm',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
