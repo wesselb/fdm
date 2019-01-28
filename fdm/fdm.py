@@ -22,21 +22,19 @@ class FDM(object):
         grid (list): Relative spacing of samples of the function used by the
             method.
         deriv (int): Order of the derivative to estimate.
-        eps (float, optional): Absolute round-off error of the function
-            evaluation. This is used to estimate the step size.
-        bound (float, optional): Upper bound of the absolute value of the
-            function and all its derivatives. This is used to estimate the
-            step size.
+        condition (float, optional): Amplification of the infinity norm when
+            passed to the function's derivatives. Defaults to `100`.
 
     Attributes:
         grid (list): Relative spacing of samples of the function used by the
             method.
         order (int): Order of the estimator.
         deriv (int): Order of the derivative to estimate.
-        eps (float): Absolute round-off error of the function evaluation. This
-            is used to estimate the step size.
-        bound (float): Upper bound of the absolute value of the function and
-            all its derivatives. This is used to estimate the step size.
+        eps (float): Estimated absolute round-off error of the function
+            evaluation. This is used to estimate the step size.
+        bound (float): Estimated upper bound of the absolute value of the
+            function and all its derivatives. This is used to estimate the
+            step size.
         coefs (list): Weighting of the samples used to estimate the derivative.
         step (float): Estimate of the step size. This estimate depends on
             `eps` and `bound`, and may be inadequate if `eps` and `bound` are
@@ -46,12 +44,15 @@ class FDM(object):
             `bound` are inadequate.
     """
 
-    def __init__(self, grid, deriv, eps=np.finfo(float).eps, bound=1):
+    def __init__(self, grid, deriv, condition=100):
         self.grid = np.array(grid)
         self.order = self.grid.shape[0]
         self.deriv = deriv
-        self.eps = eps
-        self.bound = bound
+        self.condition = condition
+        self.bound = None
+        self.eps = None
+        self.acc = None
+        self.step = None
 
         if self.order <= self.deriv:
             raise ValueError('Order of the method must be strictly greater '
@@ -59,11 +60,26 @@ class FDM(object):
 
         # Compute coefficients.
         C = np.stack([self.grid ** i for i in range(self.order)], axis=0)
-        x = [np.math.factorial(self.deriv) if i == self.deriv else 0
-             for i in range(self.order)]
+        x = np.zeros(self.order)
+        x[self.deriv] = np.math.factorial(self.deriv)
         self.coefs = np.linalg.solve(C, x)
 
-        # Compute step size.
+    def estimate(self, f_value=np.float64(1)):
+        """Estimate step size and accuracy of the method.
+
+        Args:
+            f_value (float, optional): Function evaluation. Defaults to
+                `np.float64(1)`.
+
+        Returns:
+            :class:`.fdm.FDM`: Returns itself.
+        """
+        # Estimate bound and epsilon.
+        f_max = np.max(np.abs(f_value))
+        self.bound = self.condition * f_max
+        self.eps = np.finfo(f_value.dtype).eps * f_max
+
+        # Estimate step size.
         c1 = self.eps * np.sum(np.abs(self.coefs))
         c2 = self.bound
         c2 *= np.sum(np.abs(self.coefs * self.grid ** self.order))
@@ -71,12 +87,21 @@ class FDM(object):
         self.step = (self.deriv / (self.order - self.deriv) * c1 / c2) \
                     ** (1. / self.order)
 
-        # Compute accuracy.
+        # Estimate accuracy.
         self.acc = c1 * self.step ** (-self.deriv) + \
                    c2 * self.step ** (self.order - self.deriv)
 
+        return self
+
     def __call__(self, f, x=0, step=None):
-        step = self.step if step is None else step
+        if step is None:
+            self.estimate(f(x))
+            step = self.step
+        else:
+            self.bound = None
+            self.eps = None
+            self.step = step
+            self.acc = None
         ws = [c * f(x + step * loc) for c, loc in zip(self.coefs, self.grid)]
         return np.sum(ws) / self.step ** self.deriv
 

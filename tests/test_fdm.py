@@ -24,3 +24,28 @@ def test_correctness():
 
         yield close, f(10, 1)(np.sqrt, 1), .5
         yield close, f(10, 2)(np.sqrt, 1), -.25
+        
+        
+def test_estimation():
+    m = central_fdm(2, 1)
+
+    yield eq, m.eps, None
+    yield eq, m.bound, None
+    yield eq, m.step, None
+    yield eq, m.acc, None
+
+    m.estimate()
+
+    yield isinstance, m.eps, float
+    yield isinstance, m.bound, float
+    yield isinstance, m.step, float
+    yield isinstance, m.acc, float
+
+    m(np.sin, 0, step=1e-3)
+
+    yield eq, m.eps, None
+    yield eq, m.bound, None
+    yield isinstance, m.step, float
+    yield eq, m.acc, None
+
+
