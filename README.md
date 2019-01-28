@@ -32,7 +32,7 @@ third-order method.
 Hm.
 Let's check the accuracy of this third-order method.
 The step size and accuracy of the method are computed upon calling
-`FDM.estimate(A)`.
+`FDM.estimate()`.
 
 ```python
 >>> central_fdm(order=3, deriv=2, condition=1).estimate().acc
