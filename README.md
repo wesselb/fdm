@@ -8,7 +8,103 @@ FDM estimates derivatives with finite differences.
 
 See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
+See the [docs](https://fdm-docs.readthedocs.io/en/latest)!
+
 ## Basic Usage
+
+```python
+from fdm import gradient, directional, jacobian, hvp
+```
+
+For the purpose of illustration, let us consider a quadratic function:
+
+```python
+>>> a = np.random.randn(3, 3); a = a @ a.T
+>>> a
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
+       
+>>> def f(x):
+...     return 0.5 * x @ a @ x
+```
+
+Consider the following input value:
+
+```python
+>>> x = np.array([1.0, 2.0, 3.0])
+```
+
+### Gradients
+
+```python
+>>> grad = gradient(f)
+>>> grad(x)
+array([-3.90725414,  9.94856421, 11.3502721 ])
+
+>>> a @ x
+array([-3.90725414,  9.94856421, 11.3502721 ])
+```
+
+
+### Directional Derivatives
+
+```python
+>>> v = np.array([0.5, 0.6, 0.7])  # A direction
+
+>>> dir_deriv = directional(f, v)
+>>> dir_deriv(x)
+11.960701923320736
+
+>>> np.sum(grad(x) * v)
+11.960701923321531
+```
+
+
+### Jacobians
+
+```python
+
+>>> jac = jacobian(f)
+>>> jac(x)
+array([[-3.90725414,  9.94856421, 11.3502721 ]])
+
+>>> a @ x
+array([-3.90725414,  9.94856421, 11.3502721 ])
+```
+
+But `jacobian` also works for multi-valued functions.
+
+```python
+>>> def f2(x):
+...     return a @ x
+
+>>> jac2 = jacobian(f2)
+>>> jac2(x)
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
+       
+>>> a
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
+```
+
+### Hessian-Vector Products
+
+```python
+>>> prod = hvp(f, v)
+>>> prod(x)
+array([[-0.38829506,  3.09949906,  2.04999963]])
+
+>>> 0.5 * (a + a.T) @ v
+array([-0.38829506,  3.09949906,  2.04999962])
+```
+
+
+
+## Low-Level Usage
 ```python
 >>> from fdm import central_fdm
 ```
@@ -72,5 +168,3 @@ the accuracy.
 2.057243264630415e-13
 8.570921750106208e-14
 ```
-
-Moar? See the [docs](https://fdm-docs.readthedocs.io/en/latest)!

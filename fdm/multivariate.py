@@ -13,14 +13,17 @@ __all__ = ['directional',
            'jacobian',
            'hvp',
            'default_adaptive_method',
-           'default_nonadaptive_method']
+           'default_robust_method']
 log = logging.getLogger(__name__)
 
 default_adaptive_method = central_fdm(order=5, deriv=1, adapt=1)
 """:class:`.fdm.FDM`: Default adaptive method."""
 
-default_nonadaptive_method = central_fdm(order=5, deriv=1, adapt=0)
-""":class:`.fdm.FDM`: Default non-adaptive method."""
+default_robust_method = central_fdm(order=5,
+                                    deriv=1,
+                                    adapt=0,
+                                    condition=1e4)
+""":class:`.fdm.FDM`: Default robust method."""
 
 
 def directional(f, v, method=default_adaptive_method):
@@ -124,7 +127,7 @@ def _get_index(x, i):
 def hvp(f,
         v,
         jac_method=default_adaptive_method,
-        dir_method=default_nonadaptive_method):
+        dir_method=default_robust_method):
     """Compute a Hessian--vector product.
 
     Args:
@@ -136,7 +139,7 @@ def hvp(f,
             :data:`.multivariate.default_adaptive_method`.
         dir_method (:class:`.fdm.FDM`, optional): Finite difference method to
             use for directional derivative computation. Defaults to
-            :data:`.multivariate.default_nonadaptive_method`.
+            :data:`.multivariate.default_robust_method`.
 
     Returns:
         function: Hessian of `f` multiplied by `v`.
