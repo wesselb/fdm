@@ -5,7 +5,11 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 import logging
 
-__all__ = ['FDM', 'forward_fdm', 'backward_fdm', 'central_fdm']
+__all__ = ['FDM',
+           'forward_fdm',
+           'backward_fdm',
+           'central_fdm',
+           'default_condition']
 log = logging.getLogger(__name__)
 
 default_condition = 100  #: Default condition number.
@@ -15,7 +19,7 @@ def _default_bound_estimator(f, x, condition=default_condition):
     if f is None:
         # No function is given. Just assume a constant approximation of 1.
         return condition
-    return condition * f(x)
+    return condition * np.max(np.abs(f(x)))
 
 
 def _adaptive_bound_estimator(method, order, condition, adapt, **kw_args):
@@ -56,7 +60,7 @@ class FDM(object):
         bound_estimator (function, optional): Estimator that taken in a
             function `f` and a location `x` and gives back an estimate of an
             upper bound on the `len(grid)`th order derivative of `f` at `x`.
-            Defaults to `FDM._default_bound_estimator`.
+            Defaults to :data:`FDM._default_bound_estimator`.
 
     Attributes:
         grid (list): Relative spacing of samples of the function used by the
@@ -112,14 +116,16 @@ class FDM(object):
         # Obtain a sample function value, defaulting to the constant function 1.
         f_value = f(x) if f else np.float(1.)
 
+        # Get info.
+        finfo = np.finfo(np.array(f_value).dtype)
+
         # Estimate the bound and epsilon.
         self.bound = self.bound_estimator(f, x)
-        self.eps = np.finfo(np.array(f_value).dtype).eps * \
-                   np.max(np.abs(f_value))
+        self.eps = finfo.eps * np.max(np.abs(f_value))
 
         # Estimate step size.
         c1 = self.eps * np.sum(np.abs(self.coefs))
-        c2 = self.bound
+        c2 = self.bound + np.sqrt(finfo.tiny)  # Prevent divide by zero.
         c2 *= np.sum(np.abs(self.coefs * self.grid ** self.order))
         c2 /= np.math.factorial(self.order)
         self.step = (self.deriv / (self.order - self.deriv) * c1 / c2) \
@@ -145,7 +151,7 @@ class FDM(object):
         # Execute finite-difference estimate.
         ws = [c * f(x + self.step * loc)
               for c, loc in zip(self.coefs, self.grid)]
-        return np.sum(ws) / self.step ** self.deriv
+        return np.sum(ws, axis=0) / self.step ** self.deriv
 
 
 def forward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
@@ -160,7 +166,7 @@ def forward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            `FDM.default_condition`.
+            :data:`FDM.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
@@ -185,7 +191,7 @@ def backward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            `FDM.default_condition`.
+            :data:`FDM.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
@@ -210,7 +216,7 @@ def central_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            `FDM.default_condition`.
+            :data:`FDM.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
