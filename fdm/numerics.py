@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def approx_equal(x, y,
-                 eps_abs=10 ** 2 * np.finfo(float).eps,
+                 eps_abs=1e2 * np.finfo(float).eps,
                  eps_rel=np.sqrt(np.finfo(float).eps)):
     """Check whether `x` and `y` are approximately equal.
 
