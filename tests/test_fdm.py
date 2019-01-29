@@ -69,7 +69,7 @@ def test_adaptation():
 def test_order_monotonicity():
     err_ref = 1e-4
 
-    for i in range(3, 11):
+    for i in range(3, 8):
         err = np.abs(central_fdm(i, 2, condition=1)(np.sin, 1) + np.sin(1))
 
         # Check that it did better than the previous estimator.

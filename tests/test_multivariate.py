@@ -5,14 +5,14 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 from numpy.testing import assert_allclose as close
 from fdm import central_fdm, directional, gradient, jacobian, hvp
-from fdm.multivariate import _get_index
+from fdm.multivariate import _get_at_index
 
 # noinspection PyUnresolvedReferences
 from . import eq, neq, lt, le, ge, gt, raises, call, ok, lam
 
 
 def test_get_index():
-    yield raises, RuntimeError, lambda: _get_index(np.array(1), 1)
+    yield raises, RuntimeError, lambda: _get_at_index(np.array(1), 1)
 
 
 def test_gradient_vector_argument():

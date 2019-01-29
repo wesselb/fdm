@@ -64,6 +64,10 @@ def gradient(f, method=default_adaptive_method):
     def compute_gradient(x):
         x = np.array(x)  # Cast to a NumPy object.
 
+        # Handle edge case where `x` is a scalar.
+        if x.shape == ():
+            return method(f, x)
+
         # Construct the gradient.
         grad = np.empty_like(x)
 
@@ -71,8 +75,12 @@ def gradient(f, method=default_adaptive_method):
         e = np.zeros_like(x)
         one = np.array(1).astype(x.dtype)
         zero = np.array(0).astype(x.dtype)
+
         for i in range(e.size):
+            # Linearly index into the array.
             ind = np.unravel_index(i, e.shape)
+
+            # Compute element of the gradient.
             e[ind] = one
             grad[ind] = directional(f, e, method)(x)
             e[ind] = zero
@@ -106,7 +114,7 @@ def jacobian(f, method=default_adaptive_method):
 
         # Loop over outputs to fill the Jacobian.
         for i in range(size_out):
-            grad = gradient(lambda y: _get_index(f(y), i), method)
+            grad = gradient(lambda y: _get_at_index(f(y), i), method)
             jac[i, :] = np.reshape(grad(x), size_in)
 
         return jac
@@ -114,7 +122,7 @@ def jacobian(f, method=default_adaptive_method):
     return compute_jacobian
 
 
-def _get_index(x, i):
+def _get_at_index(x, i):
     if x.shape == ():
         if i == 0:
             return x
