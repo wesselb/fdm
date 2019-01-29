@@ -18,6 +18,28 @@ def _default_bound_estimator(f, x, condition=default_condition):
     return condition * f(x)
 
 
+def _adaptive_bound_estimator(method, order, condition, adapt, **kw_args):
+    if adapt >= 1:
+        # Estimate the `order`th derivative of the function `f` at `x`.
+        estimate_derivative = \
+            method(order + 1, order, adapt - 1, condition, **kw_args)
+
+        # Adaptive estimator:
+        def estimator(f, x, condition_=condition):
+            # If no function is supplied, fall back to the default estimator.
+            if f is None:
+                return _default_bound_estimator(f, x, condition_)
+            else:
+                return np.max(np.abs(estimate_derivative(f, x)))
+
+    else:
+        # Non-adaptive estimator:
+        def estimator(f, x, condition_=condition):
+            return _default_bound_estimator(f, x, condition_)
+
+    return estimator
+
+
 class FDM(object):
     """A finite difference method.
 
@@ -145,8 +167,8 @@ def forward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     """
     return FDM(np.arange(order),
                deriv,
-               bound_estimator=_generate_bound_estimator(
-                   forward_fdm, order, deriv, condition, adapt, **kw_args
+               bound_estimator=_adaptive_bound_estimator(
+                   forward_fdm, order, condition, adapt, **kw_args
                ),
                **kw_args)
 
@@ -170,8 +192,8 @@ def backward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     """
     return FDM(-np.arange(order)[::-1],
                deriv,
-               bound_estimator=_generate_bound_estimator(
-                   backward_fdm, order, deriv, condition, adapt, **kw_args
+               bound_estimator=_adaptive_bound_estimator(
+                   backward_fdm, order, condition, adapt, **kw_args
                ),
                **kw_args)
 
@@ -195,37 +217,7 @@ def central_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     """
     return FDM(np.linspace(-1, 1, order),
                deriv,
-               bound_estimator=_generate_bound_estimator(
-                   central_fdm, order, deriv, condition, adapt, **kw_args
+               bound_estimator=_adaptive_bound_estimator(
+                   central_fdm, order, condition, adapt, **kw_args
                ),
                **kw_args)
-
-
-def _generate_bound_estimator(method,
-                              order,
-                              deriv,
-                              condition,
-                              adapt,
-                              **kw_args):
-    if adapt >= 1:
-        # Estimate the `order`th derivative of the function `f` at `x`.
-        estimate_derivative = method(order + 1,
-                                     order,
-                                     adapt - 1,
-                                     condition,
-                                     **kw_args)
-
-        # Adaptive estimator:
-        def estimator(f, x, condition=condition):
-            # If no function is supplied, fall back to the default estimator.
-            if f is None:
-                return _default_bound_estimator(f, x, condition)
-            else:
-                return np.max(np.abs(estimate_derivative(f, x)))
-
-    else:
-        # Non-adaptive estimator:
-        def estimator(f, x, condition=condition):
-            return _default_bound_estimator(f, x, condition)
-
-    return estimator
