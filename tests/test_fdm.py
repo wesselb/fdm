@@ -24,8 +24,8 @@ def test_correctness():
 
         yield close, f(10, 1)(np.sqrt, 1), .5
         yield close, f(10, 2)(np.sqrt, 1), -.25
-        
-        
+
+
 def test_estimation():
     m = central_fdm(2, 1)
 
@@ -49,3 +49,30 @@ def test_estimation():
     yield eq, m.acc, None
 
 
+def test_adaptation():
+    def f(x):
+        return 1 / x
+
+    def df(x):
+        return -1 / x ** 2
+
+    err1 = np.abs(forward_fdm(3, 1, adapt=0)(f, 1e-3) - df(1e-3))
+    err2 = np.abs(forward_fdm(3, 1, adapt=1)(f, 1e-3) - df(1e-3))
+
+    # Check that adaptation helped.
+    yield le, err2, 1e-2 * err1
+
+    # Check that adaptation gets it right.
+    yield le, err2, 1e-4
+
+
+def test_order_monotonicity():
+    err_ref = 1e-4
+
+    for i in range(3, 11):
+        err = np.abs(central_fdm(i, 2, condition=1)(np.sin, 1) + np.sin(1))
+
+        # Check that it did better than the previous estimator.
+        yield le, err, err_ref
+
+        err_ref = err
