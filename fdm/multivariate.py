@@ -40,7 +40,8 @@ def directional(f, v, method=default_adaptive_method):
     """
 
     def compute_derivative(x):
-        zero = np.array(0).astype(np.array(x).dtype)
+        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
+        zero = np.array(0).astype(dtype)
         return method(lambda eps: f(x + eps * v), zero)
 
     return compute_derivative
@@ -63,18 +64,19 @@ def gradient(f, method=default_adaptive_method):
 
     def compute_gradient(x):
         x = np.array(x)  # Cast to a NumPy object.
+        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
 
         # Handle edge case where `x` is a scalar.
         if x.shape == ():
             return method(f, x)
 
         # Construct the gradient.
-        grad = np.empty_like(x)
+        grad = np.empty_like(x, dtype=dtype)
 
         # Loop over a basis for `x` to compute the gradient.
         e = np.zeros_like(x)
-        one = np.array(1).astype(x.dtype)
-        zero = np.array(0).astype(x.dtype)
+        one = np.array(1).astype(dtype)
+        zero = np.array(0).astype(dtype)
 
         for i in range(e.size):
             # Linearly index into the array.
@@ -104,13 +106,15 @@ def jacobian(f, method=default_adaptive_method):
 
     def compute_jacobian(x):
         x = np.array(x)  # Cast to a NumPy object.
+        size_in = np.size(x)  # Size of input.
 
-        # Query the function once to check the size of the output.
-        size_in = np.size(x)
-        size_out = np.size(f(x))
+        # Query the object once to get the dtype and output size.
+        fx = np.array(f(x))
+        dtype = fx.dtype
+        size_out = fx.size
 
         # Construct the Jacobian.
-        jac = np.empty((size_out, size_in), dtype=x.dtype)
+        jac = np.empty((size_out, size_in), dtype=dtype)
 
         # Loop over outputs to fill the Jacobian.
         for i in range(size_out):
