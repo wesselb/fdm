@@ -61,6 +61,8 @@ class FDM(object):
             function `f` and a location `x` and gives back an estimate of an
             upper bound on the `len(grid)`th order derivative of `f` at `x`.
             Defaults to :data:`FDM._default_bound_estimator`.
+        factor (float, optional): Estimate of the relative error on function
+            evaluations as a multiple of the machine epsilon. Defaults to `1`.
 
     Attributes:
         grid (list): Relative spacing of samples of the function used by the
@@ -81,11 +83,16 @@ class FDM(object):
             `bound` are inadequate.
     """
 
-    def __init__(self, grid, deriv, bound_estimator=_default_bound_estimator):
+    def __init__(self,
+                 grid,
+                 deriv,
+                 bound_estimator=_default_bound_estimator,
+                 factor=1):
         self.grid = np.array(grid)
         self.order = self.grid.shape[0]
         self.deriv = deriv
         self.bound_estimator = bound_estimator
+        self.factor = factor
         self.bound = None
         self.eps = None
         self.acc = None
@@ -114,14 +121,14 @@ class FDM(object):
             :class:`.fdm.FDM`: Returns itself.
         """
         # Obtain a sample function value, defaulting to the constant function 1.
-        f_value = f(x) if f else np.float(1.)
+        f_value = f(x) if f else np.float64(1.)
 
         # Get info.
         finfo = np.finfo(np.array(f_value).dtype)
 
         # Estimate the bound and epsilon.
         self.bound = self.bound_estimator(f, x)
-        self.eps = finfo.eps * np.max(np.abs(f_value))
+        self.eps = finfo.eps * np.max(np.abs(f_value)) * self.factor
 
         # Estimate step size.
         c1 = self.eps * np.sum(np.abs(self.coefs))
