@@ -60,7 +60,7 @@ class FDM(object):
         bound_estimator (function, optional): Estimator that taken in a
             function `f` and a location `x` and gives back an estimate of an
             upper bound on the `len(grid)`th order derivative of `f` at `x`.
-            Defaults to :data:`FDM._default_bound_estimator`.
+            Defaults to :data:`.fdm._default_bound_estimator`.
         factor (float, optional): Estimate of the relative error on function
             evaluations as a multiple of the machine epsilon. Defaults to `1`.
 
@@ -173,7 +173,7 @@ def forward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            :data:`FDM.default_condition`.
+            :data:`.fdm.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
@@ -198,7 +198,7 @@ def backward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            :data:`FDM.default_condition`.
+            :data:`.fdm.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
@@ -223,7 +223,7 @@ def central_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
             derivatives to dynamically determine the step size. Defaults to `1`.
         condition (float, optional): Amplification of the infinity norm when
             passed to the function's derivatives. Defaults to
-            :data:`FDM.default_condition`.
+            :data:`.fdm.default_condition`.
 
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
