@@ -121,18 +121,19 @@ class FDM(object):
             :class:`.fdm.FDM`: Returns itself.
         """
         # Obtain a sample function value, defaulting to the constant function 1.
-        f_value = f(x) if f else np.float64(1.)
+        f_value = f(x) if f else np.float64(1)
 
-        # Get info.
+        # Get info and a tiny number to prevent divide-by-zero errors.
         finfo = np.finfo(np.array(f_value).dtype)
+        tiny = 1e-20
 
         # Estimate the bound and epsilon.
-        self.bound = self.bound_estimator(f, x)
-        self.eps = finfo.eps * np.max(np.abs(f_value)) * self.factor
+        self.bound = self.bound_estimator(f, x) + tiny
+        self.eps = finfo.eps * (np.max(np.abs(f_value)) + tiny) * self.factor
 
         # Estimate step size.
         c1 = self.eps * np.sum(np.abs(self.coefs))
-        c2 = self.bound + np.sqrt(finfo.tiny)  # Prevent divide by zero.
+        c2 = self.bound
         c2 *= np.sum(np.abs(self.coefs * self.grid ** self.order))
         c2 /= np.math.factorial(self.order)
         self.step = (self.deriv / (self.order - self.deriv) * c1 / c2) \
@@ -144,7 +145,7 @@ class FDM(object):
 
         return self
 
-    def __call__(self, f, x=0, step=None):
+    def __call__(self, f, x=np.float64(0), step=None):
         if step is None:
             # Dynamically estimate the step size and accuracy given this bound.
             self.estimate(f, x)

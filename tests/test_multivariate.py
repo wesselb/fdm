@@ -19,11 +19,11 @@ def test_gradient_vector_argument():
     m = central_fdm(10, 1)
 
     for a, x in zip([np.random.randn(),
-                     np.random.randn(10),
-                     np.random.randn(10, 10)],
+                     np.random.randn(3),
+                     np.random.randn(3, 3)],
                     [np.random.randn(),
-                     np.random.randn(10),
-                     np.random.randn(10, 10)]):
+                     np.random.randn(3),
+                     np.random.randn(3, 3)]):
         def f(y):
             return np.sum(a * y * y)
 
@@ -32,37 +32,37 @@ def test_gradient_vector_argument():
 
 def test_directional():
     m = central_fdm(10, 1)
-    a = np.random.randn(10)
+    a = np.random.randn(3)
 
     def f(x):
         return np.sum(a * x)
 
-    x = np.random.randn(10)
-    v = np.random.randn(10)
+    x = np.random.randn(3)
+    v = np.random.randn(3)
     yield close, np.sum(gradient(f, m)(x) * v), directional(f, v, m)(x)
 
 
 def test_jacobian():
     m = central_fdm(10, 1)
-    a = np.random.randn(10, 10)
+    a = np.random.randn(3, 3)
 
     def f(x):
         return np.matmul(a, x)
 
-    x = np.random.randn(10)
+    x = np.random.randn(3)
     yield close, jacobian(f, m)(x), a
 
 
 def test_hvp():
     m_jac = central_fdm(10, 1, adapt=1)
     m_dir = central_fdm(10, 1, adapt=0)
-    a = np.random.randn(10, 10)
+    a = np.random.randn(3, 3)
 
     def f(x):
         return 0.5 * np.matmul(x, np.matmul(a, x))
 
-    x = np.random.randn(10)
-    v = np.random.randn(10)
+    x = np.random.randn(3)
+    v = np.random.randn(3)
     yield close, \
           hvp(f, v, jac_method=m_jac, dir_method=m_dir)(x), \
           np.matmul(0.5 * (a + a.T), v)[None, :]
