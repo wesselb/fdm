@@ -156,7 +156,7 @@ class FDM(object):
             self.step = step
             self.acc = None
 
-        # Execute finite-difference estimate.
+        # Execute finite difference estimate.
         ws = [c * f(x + self.step * loc)
               for c, loc in zip(self.coefs, self.grid)]
         return np.sum(ws, axis=0) / self.step ** self.deriv
