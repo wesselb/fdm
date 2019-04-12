@@ -8,7 +8,7 @@ FDM estimates derivatives with finite differences.
 
 See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
-See the [docs](https://fdm-docs.readthedocs.io/en/latest)!
+See the [docs](https://wesselb.github.io/fdm).
 
 ## Basic Usage
 
