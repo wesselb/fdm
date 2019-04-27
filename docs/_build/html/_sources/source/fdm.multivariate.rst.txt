@@ -1,0 +1,7 @@
+fdm.multivariate module
+=======================
+
+.. automodule:: fdm.multivariate
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FDM: Finite Difference Methods &mdash; fdm 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Application Programming Interface" href="api.html" />
+    <link rel="prev" title="Welcome" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fdm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FDM: Finite Difference Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gradients">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directional-derivatives">Directional Derivatives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jacobians">Jacobians</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hessian-vector-products">Hessian-Vector Products</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#low-level-usage">Low-Level Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Application Programming Interface</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fdm</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>FDM: Finite Difference Methods</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fdm-finite-difference-methods">
+<h1><a class="reference external" href="http://github.com/wesselb/fdm">FDM: Finite Difference Methods</a><a class="headerlink" href="#fdm-finite-difference-methods" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://travis-ci.org/wesselb/fdm"><img alt="Build" src="https://travis-ci.org/wesselb/fdm.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/github/wesselb/fdm?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master&amp;service=github" /></a> <a class="reference external" href="https://wesselb.github.io/fdm"><img alt="Latest Docs" src="https://img.shields.io/badge/docs-latest-blue.svg" /></a></p>
+<p>FDM estimates derivatives with finite differences.</p>
+<p>See also <a class="reference external" href="https://github.com/invenia/FDM.jl">FDM.jl</a>.</p>
+<p>See the <a class="reference external" href="https://wesselb.github.io/fdm">docs</a>.</p>
+<ul class="simple">
+<li><a class="reference external" href="#installation">Installation</a></li>
+<li><a class="reference external" href="#basic-usage">Basic Usage</a><ul>
+<li><a class="reference external" href="#gradients">Gradients</a></li>
+<li><a class="reference external" href="#directional-derivatives">Directional Derivatives</a></li>
+<li><a class="reference external" href="#jacobians">Jacobians</a></li>
+<li><a class="reference external" href="#hessian-vector-products">Hessian-Vector Products</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#low-level-usage">Low-Level Usage</a></li>
+</ul>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The package is tested for Python 2.7 and Python 3.6, which are the
+versions recommended to use. To install the package, use the following
+sequence of commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">wesselb</span><span class="o">/</span><span class="n">fdm</span>
+<span class="n">cd</span> <span class="n">fdm</span>
+<span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="k">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">hvp</span>
+</pre></div>
+</div>
+<p>For the purpose of illustration, let us consider a quadratic function:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
+<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
+<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">@</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>Consider the following input value:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="section" id="gradients">
+<h3>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="directional-derivatives">
+<h3>Directional Derivatives<a class="headerlink" href="#directional-derivatives" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>  <span class="c1"># A direction</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span> <span class="o">=</span> <span class="n">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">11.960701923320736</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+<span class="go">11.960701923321531</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="jacobians">
+<h3>Jacobians<a class="headerlink" href="#jacobians" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[-3.90725414,  9.94856421, 11.3502721 ]])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+</pre></div>
+</div>
+<p>But <code class="docutils literal notranslate"><span class="pre">jacobian</span></code> also works for multi-valued functions.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
+<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
+<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
+<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
+<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hessian-vector-products">
+<h3>Hessian-Vector Products<a class="headerlink" href="#hessian-vector-products" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span> <span class="o">=</span> <span class="n">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[-0.38829506,  3.09949906,  2.04999963]])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">v</span>
+<span class="go">array([-0.38829506,  3.09949906,  2.04999962])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="low-level-usage">
+<h2>Low-Level Usage<a class="headerlink" href="#low-level-usage" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fdm</span> <span class="k">import</span> <span class="n">central_fdm</span>
+</pre></div>
+</div>
+<p>Let’s try to estimate the first derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
+second-order method, where we know that <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> is well conditioned.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">4.307577627926662e-10</span>
+</pre></div>
+</div>
+<p>And let’s try to estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code>
+with a third-order method.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">-1.263876664436836e-07</span>
+</pre></div>
+</div>
+<p>Hm. Let’s check the accuracy of this third-order method. The step size
+and accuracy of the method are computed upon calling <code class="docutils literal notranslate"><span class="pre">FDM.estimate()</span></code>.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
+<span class="go">8.733476581980376e-06</span>
+</pre></div>
+</div>
+<p>We might want a little more accuracy. Let’s check the accuracy of a
+fifth-order method.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
+<span class="go">7.343652562575155e-10</span>
+</pre></div>
+</div>
+<p>And let’s estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
+fifth-order method.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">-9.145184609593571e-11</span>
+</pre></div>
+</div>
+<p>Hooray!</p>
+<p>Finally, let us verify that increasing the order indeed reliably
+increases the accuracy.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+<span class="gp">... </span>     <span class="nb">print</span><span class="p">(</span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">-1.263876664436836e-07</span>
+<span class="go">6.341286606925678e-09</span>
+<span class="go">-9.145184609593571e-11</span>
+<span class="go">2.7335911312320604e-12</span>
+<span class="go">6.588063428125679e-13</span>
+<span class="go">2.142730437526552e-13</span>
+<span class="go">2.057243264630415e-13</span>
+<span class="go">8.570921750106208e-14</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="Application Programming Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Wessel Bruinsma.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

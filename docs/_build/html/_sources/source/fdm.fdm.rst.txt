@@ -1,0 +1,7 @@
+fdm.fdm module
+==============
+
+.. automodule:: fdm.fdm
+    :members:
+    :undoc-members:
+    :show-inheritance:

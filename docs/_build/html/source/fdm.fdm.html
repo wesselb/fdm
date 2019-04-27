@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fdm.fdm module &mdash; fdm 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fdm.multivariate module" href="fdm.multivariate.html" />
+    <link rel="prev" title="Application Programming Interface" href="../api.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fdm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">FDM: Finite Difference Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Application Programming Interface</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fdm.fdm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdm.multivariate.html">fdm.multivariate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdm.numerics.html">fdm.numerics module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fdm</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Application Programming Interface</a> &raquo;</li>
+        
+      <li>fdm.fdm module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/fdm.fdm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fdm.fdm">
+<span id="fdm-fdm-module"></span><h1>fdm.fdm module<a class="headerlink" href="#module-fdm.fdm" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fdm.fdm.FDM">
+<em class="property">class </em><code class="descclassname">fdm.fdm.</code><code class="descname">FDM</code><span class="sig-paren">(</span><em>grid</em>, <em>deriv</em>, <em>bound_estimator=&lt;function _default_bound_estimator&gt;</em>, <em>factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#FDM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.FDM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A finite difference method.</p>
+<p>Call the finite difference method with a function <cite>f</cite>, an input location
+<cite>x</cite> (optional: defaults to <cite>0</cite>), and a step size (optional: defaults to an
+estimate) to estimate the derivative of <cite>f</cite> at <cite>x</cite>. For example, if <cite>m</cite>
+is an instance of <a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, then <cite>m(f, 1)</cite> estimates the derivative
+of <cite>f</cite> at <cite>1</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>grid</strong> (<em>list</em>) – Relative spacing of samples of the function used by the
+method.</li>
+<li><strong>deriv</strong> (<em>int</em>) – Order of the derivative to estimate.</li>
+<li><strong>bound_estimator</strong> (<em>function</em><em>, </em><em>optional</em>) – Estimator that taken in a
+function <cite>f</cite> and a location <cite>x</cite> and gives back an estimate of an
+upper bound on the <cite>len(grid)`th order derivative of `f</cite> at <cite>x</cite>.
+Defaults to <code class="xref py py-data docutils literal notranslate"><span class="pre">fdm._default_bound_estimator</span></code>.</li>
+<li><strong>factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Estimate of the relative error on function
+evaluations as a multiple of the machine epsilon. Defaults to <cite>1</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.grid">
+<code class="descname">grid</code><a class="headerlink" href="#fdm.fdm.FDM.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – Relative spacing of samples of the function used by the
+method.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.order">
+<code class="descname">order</code><a class="headerlink" href="#fdm.fdm.FDM.order" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – Order of the estimator.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.deriv">
+<code class="descname">deriv</code><a class="headerlink" href="#fdm.fdm.FDM.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – Order of the derivative to estimate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.eps">
+<code class="descname">eps</code><a class="headerlink" href="#fdm.fdm.FDM.eps" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Estimated absolute round-off error of the function
+evaluation. This is used to estimate the step size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.bound">
+<code class="descname">bound</code><a class="headerlink" href="#fdm.fdm.FDM.bound" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Estimated upper bound of the absolute value of the
+function and all its derivatives. This is used to estimate the
+step size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.coefs">
+<code class="descname">coefs</code><a class="headerlink" href="#fdm.fdm.FDM.coefs" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – Weighting of the samples used to estimate the derivative.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.step">
+<code class="descname">step</code><a class="headerlink" href="#fdm.fdm.FDM.step" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Estimate of the step size. This estimate depends on
+<cite>eps</cite> and <cite>bound</cite>, and may be inadequate if <cite>eps</cite> and <cite>bound</cite> are
+inadequate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.acc">
+<code class="descname">acc</code><a class="headerlink" href="#fdm.fdm.FDM.acc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Estimate of the accuracy of the method. This estimate
+depends on <cite>eps</cite> and <cite>bound</cite>, and may be inadequate if <cite>eps</cite> and
+<cite>bound</cite> are inadequate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fdm.fdm.FDM.estimate">
+<code class="descname">estimate</code><span class="sig-paren">(</span><em>f=None</em>, <em>x=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#FDM.estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.FDM.estimate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate step size and accuracy of the method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>function</em><em>, </em><em>optional</em>) – Function to estimate step size and accuracy
+for. Defaults to the constant function <cite>1</cite>.</li>
+<li><strong>x</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Location to estimate derivative at. Defaults
+to <cite>0</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns itself.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fdm.fdm.forward_fdm">
+<code class="descclassname">fdm.fdm.</code><code class="descname">forward_fdm</code><span class="sig-paren">(</span><em>order</em>, <em>deriv</em>, <em>adapt=1</em>, <em>condition=100</em>, <em>**kw_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#forward_fdm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.forward_fdm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a forward finite difference method.</p>
+<p>Further takes in keyword arguments of the constructor of <a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>order</strong> (<em>int</em>) – Order of the method.</li>
+<li><strong>deriv</strong> (<em>int</em>) – Order of the derivative to estimate.</li>
+<li><strong>adapt</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of recursive calls to higher-order
+derivatives to dynamically determine the step size. Defaults to <cite>1</cite>.</li>
+<li><strong>condition</strong> (<em>float</em><em>, </em><em>optional</em>) – Amplification of the infinity norm when
+passed to the function’s derivatives. Defaults to
+<a class="reference internal" href="#fdm.fdm.default_condition" title="fdm.fdm.default_condition"><code class="xref py py-data docutils literal notranslate"><span class="pre">fdm.default_condition</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The desired finite difference method.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fdm.fdm.backward_fdm">
+<code class="descclassname">fdm.fdm.</code><code class="descname">backward_fdm</code><span class="sig-paren">(</span><em>order</em>, <em>deriv</em>, <em>adapt=1</em>, <em>condition=100</em>, <em>**kw_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#backward_fdm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.backward_fdm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a backward finite difference method.</p>
+<p>Further takes in keyword arguments of the constructor of <a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>order</strong> (<em>int</em>) – Order of the method.</li>
+<li><strong>deriv</strong> (<em>int</em>) – Order of the derivative to estimate.</li>
+<li><strong>adapt</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of recursive calls to higher-order
+derivatives to dynamically determine the step size. Defaults to <cite>1</cite>.</li>
+<li><strong>condition</strong> (<em>float</em><em>, </em><em>optional</em>) – Amplification of the infinity norm when
+passed to the function’s derivatives. Defaults to
+<a class="reference internal" href="#fdm.fdm.default_condition" title="fdm.fdm.default_condition"><code class="xref py py-data docutils literal notranslate"><span class="pre">fdm.default_condition</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The desired finite difference method.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fdm.fdm.central_fdm">
+<code class="descclassname">fdm.fdm.</code><code class="descname">central_fdm</code><span class="sig-paren">(</span><em>order</em>, <em>deriv</em>, <em>adapt=1</em>, <em>condition=100</em>, <em>**kw_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#central_fdm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.central_fdm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a central finite difference method.</p>
+<p>Further takes in keyword arguments of the constructor of <a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>order</strong> (<em>int</em>) – Order of the method.</li>
+<li><strong>deriv</strong> (<em>int</em>) – Order of the derivative to estimate.</li>
+<li><strong>adapt</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of recursive calls to higher-order
+derivatives to dynamically determine the step size. Defaults to <cite>1</cite>.</li>
+<li><strong>condition</strong> (<em>float</em><em>, </em><em>optional</em>) – Amplification of the infinity norm when
+passed to the function’s derivatives. Defaults to
+<a class="reference internal" href="#fdm.fdm.default_condition" title="fdm.fdm.default_condition"><code class="xref py py-data docutils literal notranslate"><span class="pre">fdm.default_condition</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The desired finite difference method.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="fdm.fdm.default_condition">
+<code class="descclassname">fdm.fdm.</code><code class="descname">default_condition</code><em class="property"> = 100</em><a class="headerlink" href="#fdm.fdm.default_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default condition number.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fdm.multivariate.html" class="btn btn-neutral float-right" title="fdm.multivariate module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api.html" class="btn btn-neutral" title="Application Programming Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Wessel Bruinsma.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
