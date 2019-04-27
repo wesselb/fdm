@@ -1,7 +1,0 @@
-Features:
-    ☐ Automatic testing of sensitivities
-        ☐ Use estimated accuracies to determine equality
-    ☐ Richardson extrapolation
-    ☐ Partial and mixed derivatives
-    ☐ In hvp, use estimated accuracy to set error on function accuracy
-
