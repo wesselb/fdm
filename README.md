@@ -10,12 +10,24 @@ See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
 See the [docs](https://wesselb.github.io/fdm).
 
+* [Installation](#installation)
 * [Basic Usage](#basic-usage)
     - [Gradients](#gradients)
     - [Directional Derivatives](#directional-derivatives)
     - [Jacobians](#jacobians)
     - [Hessian-Vector Products](#hessian-vector-products)
 * [Low-Level Usage](#low-level-usage)
+
+## Installation
+The package is tested for Python 2.7 and Python 3.6, which are the versions 
+recommended to use. To install the package, use the following sequence of 
+commands:
+
+```
+git clone https://github.com/wesselb/fdm
+cd fdm
+make install
+```
 
 ## Basic Usage
 
