@@ -20,8 +20,8 @@ See the [docs](https://wesselb.github.io/fdm).
 
 ## Installation
 The package is tested for Python 2.7 and Python 3.6, which are the versions 
-recommended to use. To install the package, use the following sequence of 
-commands:
+recommended to use.
+To install the package, use the following sequence of commands:
 
 ```
 git clone https://github.com/wesselb/fdm
