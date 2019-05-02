@@ -3,9 +3,8 @@
 from __future__ import absolute_import, division, print_function
 
 from fdm import approx_equal
-
 # noinspection PyUnresolvedReferences
-from . import eq, neq, lt, le, ge, gt, raises, call, ok, lam
+from . import eq, neq, lt, le, ge, gt, raises, ok
 
 
 def test_approx_equal():

@@ -4,11 +4,11 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 from numpy.testing import assert_allclose as close
+
 from fdm import central_fdm, directional, gradient, jacobian, hvp
 from fdm.multivariate import _get_at_index
-
 # noinspection PyUnresolvedReferences
-from . import eq, neq, lt, le, ge, gt, raises, call, ok, lam
+from . import eq, neq, lt, le, ge, gt, raises, ok
 
 
 def test_get_index():

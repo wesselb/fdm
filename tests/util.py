@@ -16,15 +16,3 @@ ge = assert_greater_equal
 gt = assert_greater
 raises = assert_raises
 ok = ok_
-
-
-def call(f, method, args=(), res=True):
-    assert_equal(getattr(f, method)(*args), res)
-
-
-def lam(f, args=()):
-    ok_(f(*args))
-
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
