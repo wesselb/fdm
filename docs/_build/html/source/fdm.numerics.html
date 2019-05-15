@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="fdm.multivariate module" href="fdm.multivariate.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -166,26 +168,42 @@
 otherwise.  If this function returns <cite>True</cite>, then it is guaranteed that
 <cite>abs(x - y) &lt; 2 eps_rel max(abs(x), abs(y))</cite> if <cite>x</cite> and <cite>y</cite> are large,
 and <cite>abs(x - y) &lt; 2 eps_abs</cite> if <cite>x</cite> and <cite>y</cite> are small.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>object</em>) – First object to compare.</li>
-<li><strong>y</strong> (<em>object</em>) – Second object to compare.</li>
-<li><strong>eps_abs</strong> (<em>float</em><em>, </em><em>optional</em>) – Absolute tolerance.</li>
-<li><strong>eps_rel</strong> (<em>float</em><em>, </em><em>optional</em>) – Relative tolerance.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>object</em>) – First object to compare.</p></li>
+<li><p><strong>y</strong> (<em>object</em>) – Second object to compare.</p></li>
+<li><p><strong>eps_abs</strong> (<em>float</em><em>, </em><em>optional</em>) – Absolute tolerance.</p></li>
+<li><p><strong>eps_rel</strong> (<em>float</em><em>, </em><em>optional</em>) – Relative tolerance.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Approximate equality of <cite>x</cite> and <cite>y</cite>.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Approximate equality of <cite>x</cite> and <cite>y</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fdm.numerics.check_sensitivity">
+<code class="descclassname">fdm.numerics.</code><code class="descname">check_sensitivity</code><span class="sig-paren">(</span><em>f</em>, <em>s_f</em>, <em>args</em>, <em>kw_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/numerics.html#check_sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.numerics.check_sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the sensitivity of a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>function</em>) – Function to check.</p></li>
+<li><p><strong>s_f</strong> (<em>function</em>) – Sensitivity of <cite>f</cite>. Should have signature
+<cite>s_f(s_y, y, *args, **kw_args)</cite>, where <cite>s_y</cite> is the sensitivity of
+the output, <cite>y = f(*args, **kw_args)</cite>, and <cite>*args</cite> and <cite>**kw_args</cite>
+the arguments and keyword arguments that <cite>f</cite> was evaluated at.</p></li>
+<li><p><strong>args</strong> (<em>tuple</em>) – Arguments to test <cite>f</cite> at.</p></li>
+<li><p><strong>kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Keyword arguments to test <cite>f</cite> at. Defaults to
+<cite>{}</cite>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -199,7 +217,7 @@ and <cite>abs(x - y) &lt; 2 eps_abs</cite> if <cite>x</cite> and <cite>y</cite> 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="fdm.multivariate.html" class="btn btn-neutral" title="fdm.multivariate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fdm.multivariate.html" class="btn btn-neutral float-left" title="fdm.multivariate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -208,7 +226,7 @@ and <cite>abs(x - y) &lt; 2 eps_abs</cite> if <cite>x</cite> and <cite>y</cite> 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Wessel Bruinsma.
+        &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
@@ -225,33 +243,16 @@ and <cite>abs(x - y) &lt; 2 eps_abs</cite> if <cite>x</cite> and <cite>y</cite> 
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.1.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

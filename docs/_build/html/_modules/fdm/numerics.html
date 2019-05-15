@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -153,7 +155,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;approx_equal&#39;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">.multivariate</span> <span class="k">import</span> <span class="n">directional</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;approx_equal&#39;</span><span class="p">,</span> <span class="s1">&#39;check_sensitivity&#39;</span><span class="p">]</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -179,6 +183,63 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span>
                   <span class="n">eps_abs</span> <span class="o">+</span> <span class="n">eps_rel</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="check_sensitivity"><a class="viewcode-back" href="../../source/fdm.numerics.html#fdm.numerics.check_sensitivity">[docs]</a><span class="k">def</span> <span class="nf">check_sensitivity</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s_f</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kw_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the sensitivity of a function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f (function): Function to check.</span>
+<span class="sd">        s_f (function): Sensitivity of `f`. Should have signature</span>
+<span class="sd">            `s_f(s_y, y, *args, **kw_args)`, where `s_y` is the sensitivity of</span>
+<span class="sd">            the output, `y = f(*args, **kw_args)`, and `*args` and `**kw_args`</span>
+<span class="sd">            the arguments and keyword arguments that `f` was evaluated at.</span>
+<span class="sd">        args (tuple): Arguments to test `f` at.</span>
+<span class="sd">        kw_args (dict, optional): Keyword arguments to test `f` at. Defaults to</span>
+<span class="sd">            `{}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set default `kw_args`.</span>
+    <span class="k">if</span> <span class="n">kw_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw_args</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Evaluate the function.</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
+
+    <span class="c1"># Create a random sensitivity for the output.</span>
+    <span class="n">y_sens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># Evaluate the sensitivity of the function.</span>
+    <span class="n">s_args</span> <span class="o">=</span> <span class="n">s_f</span><span class="p">(</span><span class="n">y_sens</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that `s_args` is as tuple.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">s_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_args</span><span class="p">,)</span>
+
+    <span class="c1"># Check that the correct number of sensitivities is given.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_args</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Number of sensitivities (</span><span class="si">{}</span><span class="s1">) does not match &#39;</span>
+                             <span class="s1">&#39;the number of arguments (</span><span class="si">{}</span><span class="s1">).&#39;</span>
+                             <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_args</span><span class="p">)))</span>
+
+    <span class="c1"># Walk through the arguments.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+        <span class="c1"># Create a function that only varies the `i`th argument.</span>
+        <span class="k">def</span> <span class="nf">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">args</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]),</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
+
+        <span class="c1"># Pick a random direction.</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="c1"># Compute the directional directive w.r.t. the inner product of the</span>
+        <span class="c1"># output and `y_sens` numerically and exactly.</span>
+        <span class="n">estimate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">directional</span><span class="p">(</span><span class="n">f_i</span><span class="p">,</span> <span class="n">v</span><span class="p">)(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">y_sens</span><span class="p">)</span>
+        <span class="n">exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">s_args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># Assert that the results match.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">approx_equal</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">eps_abs</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">eps_rel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Sensitivity of argument </span><span class="si">{}</span><span class="s1"> of function &quot;</span><span class="si">{}</span><span class="s1">&quot; &#39;</span>
+                                 <span class="s1">&#39;did not match numerical estimate.&#39;</span>
+                                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 </pre></div>
 
            </div>
@@ -191,7 +252,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Wessel Bruinsma.
+        &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
@@ -208,33 +269,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.1.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

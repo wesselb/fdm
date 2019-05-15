@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Application Programming Interface" href="api.html" />
     <link rel="prev" title="Welcome" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -85,14 +87,15 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FDM: Finite Difference Methods</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multivariate-derivatives">Multivariate Derivatives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#gradients">Gradients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#directional-derivatives">Directional Derivatives</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jacobians">Jacobians</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hessian-vector-products">Hessian-Vector Products</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#low-level-usage">Low-Level Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scalar-derivatives">Scalar Derivatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework">Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Application Programming Interface</a></li>
@@ -167,15 +170,18 @@
 <p>See also <a class="reference external" href="https://github.com/invenia/FDM.jl">FDM.jl</a>.</p>
 <p>See the <a class="reference external" href="https://wesselb.github.io/fdm">docs</a>.</p>
 <ul class="simple">
-<li><a class="reference external" href="#installation">Installation</a></li>
-<li><a class="reference external" href="#basic-usage">Basic Usage</a><ul>
-<li><a class="reference external" href="#gradients">Gradients</a></li>
-<li><a class="reference external" href="#directional-derivatives">Directional Derivatives</a></li>
-<li><a class="reference external" href="#jacobians">Jacobians</a></li>
-<li><a class="reference external" href="#hessian-vector-products">Hessian-Vector Products</a></li>
+<li><p><a class="reference external" href="#installation">Installation</a></p></li>
+<li><p><a class="reference external" href="#multivariate-derivatives">Multivariate Derivatives</a></p>
+<ul>
+<li><p><a class="reference external" href="#gradients">Gradients</a></p></li>
+<li><p><a class="reference external" href="#directional-derivatives">Directional Derivatives</a></p></li>
+<li><p><a class="reference external" href="#jacobians">Jacobians</a></p></li>
+<li><p><a class="reference external" href="#hessian-vector-products">Hessian-Vector Products</a></p></li>
 </ul>
 </li>
-<li><a class="reference external" href="#low-level-usage">Low-Level Usage</a></li>
+<li><p><a class="reference external" href="#scalar-derivatives">Scalar Derivatives</a></p></li>
+<li><p><a class="reference external" href="#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework">Testing Sensitivities in a Reverse-Mode Automatic Differentation
+Framework</a></p></li>
 </ul>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -188,40 +194,40 @@ sequence of commands:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="basic-usage">
-<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="k">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">hvp</span>
+<div class="section" id="multivariate-derivatives">
+<h2>Multivariate Derivatives<a class="headerlink" href="#multivariate-derivatives" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">hvp</span>
 </pre></div>
 </div>
 <p>For the purpose of illustration, let us consider a quadratic function:</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
-<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
-<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
-<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; a = np.random.randn(3, 3); a = a @ a.T
+&gt;&gt;&gt; a
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">@</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+&gt;&gt;&gt; def f(x):
+...     return 0.5 * x @ a @ x
 </pre></div>
 </div>
 <p>Consider the following input value:</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="section" id="gradients">
 <h3>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; grad = gradient(f)
+&gt;&gt;&gt; grad(x)
+array([-3.90725414,  9.94856421, 11.3502721 ])
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
-<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+&gt;&gt;&gt; a @ x
+array([-3.90725414,  9.94856421, 11.3502721 ])
 </pre></div>
 </div>
 </div>
 <div class="section" id="directional-derivatives">
 <h3>Directional Derivatives<a class="headerlink" href="#directional-derivatives" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>  <span class="c1"># A direction</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>  <span class="c1"># A direction</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span> <span class="o">=</span> <span class="n">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -234,83 +240,83 @@ sequence of commands:</p>
 </div>
 <div class="section" id="jacobians">
 <h3>Jacobians<a class="headerlink" href="#jacobians" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">array([[-3.90725414,  9.94856421, 11.3502721 ]])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; jac = jacobian(f)
+&gt;&gt;&gt; jac(x)
+array([[-3.90725414,  9.94856421, 11.3502721 ]])
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
-<span class="go">array([-3.90725414,  9.94856421, 11.3502721 ])</span>
+&gt;&gt;&gt; a @ x
+array([-3.90725414,  9.94856421, 11.3502721 ])
 </pre></div>
 </div>
 <p>But <code class="docutils literal notranslate"><span class="pre">jacobian</span></code> also works for multi-valued functions.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; def f2(x):
+...     return a @ x
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
-<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
-<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+&gt;&gt;&gt; jac2 = jacobian(f2)
+&gt;&gt;&gt; jac2(x)
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
-<span class="go">array([[ 1.56063275,  0.80421633, -2.35877318],</span>
-<span class="go">       [ 0.80421633,  4.22782295,  0.22956733],</span>
-<span class="go">       [-2.35877318,  0.22956733,  4.41663688]])</span>
+&gt;&gt;&gt; a
+array([[ 1.56063275,  0.80421633, -2.35877318],
+       [ 0.80421633,  4.22782295,  0.22956733],
+       [-2.35877318,  0.22956733,  4.41663688]])
 </pre></div>
 </div>
 </div>
 <div class="section" id="hessian-vector-products">
 <h3>Hessian-Vector Products<a class="headerlink" href="#hessian-vector-products" title="Permalink to this headline">¶</a></h3>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span> <span class="o">=</span> <span class="n">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">array([[-0.38829506,  3.09949906,  2.04999963]])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = hvp(f, v)
+&gt;&gt;&gt; prod(x)
+array([[-0.38829506,  3.09949906,  2.04999963]])
 
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">v</span>
-<span class="go">array([-0.38829506,  3.09949906,  2.04999962])</span>
+&gt;&gt;&gt; 0.5 * (a + a.T) @ v
+array([-0.38829506,  3.09949906,  2.04999962])
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="low-level-usage">
-<h2>Low-Level Usage<a class="headerlink" href="#low-level-usage" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fdm</span> <span class="k">import</span> <span class="n">central_fdm</span>
+<div class="section" id="scalar-derivatives">
+<h2>Scalar Derivatives<a class="headerlink" href="#scalar-derivatives" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">central_fdm</span>
 </pre></div>
 </div>
 <p>Let’s try to estimate the first derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
 second-order method, where we know that <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> is well conditioned.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">4.307577627926662e-10</span>
 </pre></div>
 </div>
 <p>And let’s try to estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code>
 with a third-order method.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">-1.263876664436836e-07</span>
 </pre></div>
 </div>
 <p>Hm. Let’s check the accuracy of this third-order method. The step size
 and accuracy of the method are computed upon calling <code class="docutils literal notranslate"><span class="pre">FDM.estimate()</span></code>.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
 <span class="go">8.733476581980376e-06</span>
 </pre></div>
 </div>
 <p>We might want a little more accuracy. Let’s check the accuracy of a
 fifth-order method.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
 <span class="go">7.343652562575155e-10</span>
 </pre></div>
 </div>
 <p>And let’s estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
 fifth-order method.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">-9.145184609593571e-11</span>
 </pre></div>
 </div>
 <p>Hooray!</p>
 <p>Finally, let us verify that increasing the order indeed reliably
 increases the accuracy.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-<span class="gp">... </span>     <span class="nb">print</span><span class="p">(</span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+<span class="gp">... </span>     <span class="k">print</span><span class="p">(</span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">-1.263876664436836e-07</span>
 <span class="go">6.341286606925678e-09</span>
 <span class="go">-9.145184609593571e-11</span>
@@ -319,6 +325,39 @@ increases the accuracy.</p>
 <span class="go">2.142730437526552e-13</span>
 <span class="go">2.057243264630415e-13</span>
 <span class="go">8.570921750106208e-14</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework">
+<h2>Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework<a class="headerlink" href="#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework" title="Permalink to this headline">¶</a></h2>
+<p>Consider the function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>and its sensitivity</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">s_mul</span><span class="p">(</span><span class="n">s_y</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s_y</span> <span class="o">*</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">*</span> <span class="n">s_y</span>
+</pre></div>
+</div>
+<p>The sensitivity <code class="docutils literal notranslate"><span class="pre">s_mul</span></code> takes in the sensitivity <code class="docutils literal notranslate"><span class="pre">s_y</span></code> of the output
+<code class="docutils literal notranslate"><span class="pre">y</span></code>, the output <code class="docutils literal notranslate"><span class="pre">y</span></code>, and the arguments of the function <code class="docutils literal notranslate"><span class="pre">mul</span></code>; and
+returns a tuple containing the sensitivities with respect to <code class="docutils literal notranslate"><span class="pre">a</span></code> and
+<code class="docutils literal notranslate"><span class="pre">b</span></code>. Then function <code class="docutils literal notranslate"><span class="pre">check_sensitivity</span></code> can be used to assert that
+the implementation of <code class="docutils literal notranslate"><span class="pre">s_mul</span></code> is correct:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">check_sensitivity</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_sensitivity</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">s_mul</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># Test at arguments `2` and `3`.</span>
+</pre></div>
+</div>
+<p>Suppose that the implementation were wrong, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">s_mul_wrong</span><span class="p">(</span><span class="n">s_y</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s_y</span> <span class="o">*</span> <span class="n">b</span><span class="p">,</span> <span class="n">b</span> <span class="o">*</span> <span class="n">s_y</span>  <span class="c1"># Used `b` instead of `a` for the second sensitivity!</span>
+</pre></div>
+</div>
+<p>Then <code class="docutils literal notranslate"><span class="pre">check_sensitivity</span></code> should throw an <code class="docutils literal notranslate"><span class="pre">AssertionError</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_sensitivity</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">s_mul</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">AssertionError: Sensitivity of argument 2 of function &quot;mul&quot; did not match numerical estimate.</span>
 </pre></div>
 </div>
 </div>
@@ -335,7 +374,7 @@ increases the accuracy.</p>
         <a href="api.html" class="btn btn-neutral float-right" title="Application Programming Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -344,7 +383,7 @@ increases the accuracy.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Wessel Bruinsma.
+        &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
@@ -361,33 +400,16 @@ increases the accuracy.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.1.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
