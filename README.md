@@ -11,12 +11,13 @@ See also [FDM.jl](https://github.com/invenia/FDM.jl).
 See the [docs](https://wesselb.github.io/fdm).
 
 * [Installation](#installation)
-* [Basic Usage](#basic-usage)
+* [Multivariate Derivatives](#multivariate-derivatives)
     - [Gradients](#gradients)
     - [Directional Derivatives](#directional-derivatives)
     - [Jacobians](#jacobians)
     - [Hessian-Vector Products](#hessian-vector-products)
-* [Low-Level Usage](#low-level-usage)
+* [Scalar Derivatives](#scalar-derivatives)
+* [Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework](#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework)
 
 ## Installation
 The package is tested for Python 2.7 and Python 3.6, which are the versions 
@@ -29,7 +30,7 @@ cd fdm
 make install
 ```
 
-## Basic Usage
+## Multivariate Derivatives
 
 ```python
 from fdm import gradient, directional, jacobian, hvp
@@ -123,7 +124,7 @@ array([-0.38829506,  3.09949906,  2.04999962])
 
 
 
-## Low-Level Usage
+## Scalar Derivatives
 ```python
 >>> from fdm import central_fdm
 ```
@@ -186,4 +187,46 @@ the accuracy.
 2.142730437526552e-13
 2.057243264630415e-13
 8.570921750106208e-14
+```
+
+## Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework
+
+Consider the function
+
+```python
+def mul(a, b):
+    return a * b
+```
+
+and its sensitivity
+
+```python
+def s_mul(s_y, y, a, b):
+    return s_y * b, a * s_y
+```
+
+The sensitivity `s_mul` takes in the sensitivity `s_y` of the output `y`, 
+the output `y`, and  the arguments of the function `mul`; and returns a tuple 
+containing the sensitivities with respect to `a` and `b`.
+Then function `check_sensitivity` can be used to assert that the 
+implementation of `s_mul` is correct:
+
+```python
+>>> from fdm import check_sensitivity
+
+>>> check_sensitivity(mul, s_mul, (2, 3))  # Test at arguments `2` and `3`.
+```
+
+Suppose that the implementation were wrong, for example
+
+```python
+def s_mul_wrong(s_y, y, a, b):
+    return s_y * b, b * s_y  # Used `b` instead of `a` for the second sensitivity!
+```
+
+Then `check_sensitivity` should throw an `AssertionError`:
+
+```python
+>>> check_sensitivity(mul, s_mul, (2, 3)) 
+AssertionError: Sensitivity of argument 2 of function "mul" did not match numerical estimate.
 ```
