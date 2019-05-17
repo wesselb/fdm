@@ -61,7 +61,7 @@ def check_sensitivity(f, s_f, args, kw_args=None):
     # Evaluate the sensitivity of the function.
     s_args = s_f(y_sens, y, *args, **kw_args)
 
-    # Ensure that `s_args` is as tuple.
+    # Ensure that `s_args` is a tuple.
     if not isinstance(s_args, tuple):
         s_args = (s_args,)
 
