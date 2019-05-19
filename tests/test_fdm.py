@@ -76,3 +76,10 @@ def test_order_monotonicity():
         yield le, err, err_ref
 
         err_ref = err
+
+
+def test_tiny():
+    # Check that `tiny` added in :meth:`.fdm.FDM.estimate` stabilises the
+    # numerics.
+    yield eq, central_fdm(2, 1, adapt=0)(lambda x: 0.0, 1.0), 0.0
+    yield eq, central_fdm(2, 1, adapt=1)(lambda x: x, 1.0), 1.0
