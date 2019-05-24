@@ -3,16 +3,16 @@
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
-from numpy.testing import assert_allclose as close
+import pytest
 
 from fdm import central_fdm, directional, gradient, jacobian, hvp
 from fdm.multivariate import _get_at_index
-# noinspection PyUnresolvedReferences
-from . import eq, neq, lt, le, ge, gt, raises, ok
+from .util import allclose
 
 
 def test_get_index():
-    yield raises, RuntimeError, lambda: _get_at_index(np.array(1), 1)
+    with pytest.raises(RuntimeError):
+        _get_at_index(np.array(1), 1)
 
 
 def test_gradient_vector_argument():
@@ -27,7 +27,7 @@ def test_gradient_vector_argument():
         def f(y):
             return np.sum(a * y * y)
 
-        yield close, 2 * a * x, gradient(f, m)(x)
+        allclose(2 * a * x, gradient(f, m)(x))
 
 
 def test_directional():
@@ -39,7 +39,7 @@ def test_directional():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    yield close, np.sum(gradient(f, m)(x) * v), directional(f, v, m)(x)
+    allclose(np.sum(gradient(f, m)(x) * v), directional(f, v, m)(x))
 
 
 def test_jacobian():
@@ -50,7 +50,7 @@ def test_jacobian():
         return np.matmul(a, x)
 
     x = np.random.randn(3)
-    yield close, jacobian(f, m)(x), a
+    allclose(jacobian(f, m)(x), a)
 
 
 def test_hvp():
@@ -63,6 +63,5 @@ def test_hvp():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    yield close, \
-          hvp(f, v, jac_method=m_jac, dir_method=m_dir)(x), \
-          np.matmul(0.5 * (a + a.T), v)[None, :]
+    allclose(hvp(f, v, jac_method=m_jac, dir_method=m_dir)(x),
+             np.matmul(0.5 * (a + a.T), v)[None, :])
