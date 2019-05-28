@@ -1,7 +1,17 @@
+Refactor:
+    ☐ Refactor tests to use PyTest: remove raises, fixtures, and parametrisation. @high
+
 Features:
-    ☐ Automatic testing of sensitivities
-        ☐ Use estimated accuracies to determine equality
+    ☐ Add tolerances and method to `check_sensitivity` @high
     ☐ Richardson extrapolation
     ☐ Partial and mixed derivatives
     ☐ In hvp, use estimated accuracy to set error on function accuracy
 
+Other:
+    ☐ Should the condition number also apply to the estimated derivatives? @high
+
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
+ ✓ Automatic testing of sensitivities @done (19-05-28 14:29) @project(Features)
+ x Use estimated accuracies to determine equality @cancelled (19-05-28 14:29) @project(Features)
