@@ -93,7 +93,7 @@ class FDM(object):
                  deriv,
                  bound_estimator=_default_bound_estimator,
                  factor=1,
-                 step_max=0.1):
+                 step_max=1):
         self.grid = np.array(grid)
         self.order = self.grid.shape[0]
         self.deriv = deriv
@@ -115,7 +115,7 @@ class FDM(object):
         x[self.deriv] = np.math.factorial(self.deriv)
         self.coefs = np.linalg.solve(C, x)
 
-    def estimate(self, f=None, x=np.float64(0), step_max=0.1):
+    def estimate(self, f=None, x=np.float64(0)):
         """Estimate step size and accuracy of the method.
 
         Args:
