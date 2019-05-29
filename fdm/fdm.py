@@ -63,6 +63,9 @@ class FDM(object):
             Defaults to :data:`.fdm._default_bound_estimator`.
         factor (float, optional): Estimate of the relative error on function
             evaluations as a multiple of the machine epsilon. Defaults to `1`.
+        step_max (float, optional): Maximum step size, to prevent very
+            large step sizes in the case of high-order methods. Defaults to
+            `0.1`.
 
     Attributes:
         grid (list): Relative spacing of samples of the function used by the
@@ -78,6 +81,8 @@ class FDM(object):
         step (float): Estimate of the step size. This estimate depends on
             `eps` and `bound`, and may be inadequate if `eps` and `bound` are
             inadequate.
+        step_max (float, optional): Maximum step size, to prevent very
+            large step sizes in the case of high-order methods.
         acc (float): Estimate of the accuracy of the method. This estimate
             depends on `eps` and `bound`, and may be inadequate if `eps` and
             `bound` are inadequate.
@@ -87,7 +92,8 @@ class FDM(object):
                  grid,
                  deriv,
                  bound_estimator=_default_bound_estimator,
-                 factor=1):
+                 factor=1,
+                 step_max=0.1):
         self.grid = np.array(grid)
         self.order = self.grid.shape[0]
         self.deriv = deriv
@@ -97,6 +103,7 @@ class FDM(object):
         self.eps = None
         self.acc = None
         self.step = None
+        self.step_max = step_max
 
         if self.order <= self.deriv:
             raise ValueError('Order of the method must be strictly greater '
@@ -108,7 +115,7 @@ class FDM(object):
         x[self.deriv] = np.math.factorial(self.deriv)
         self.coefs = np.linalg.solve(C, x)
 
-    def estimate(self, f=None, x=np.float64(0)):
+    def estimate(self, f=None, x=np.float64(0), step_max=0.1):
         """Estimate step size and accuracy of the method.
 
         Args:
@@ -138,6 +145,9 @@ class FDM(object):
         c2 /= np.math.factorial(self.order)
         self.step = (self.deriv / (self.order - self.deriv) * c1 / c2) \
                     ** (1. / self.order)
+
+        # Cap the step size.
+        self.step = min(self.step, self.step_max)
 
         # Estimate accuracy.
         self.acc = c1 * self.step ** (-self.deriv) + \

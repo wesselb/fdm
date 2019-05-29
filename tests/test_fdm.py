@@ -82,4 +82,14 @@ def test_tiny():
     # Check that `tiny` added in :meth:`.fdm.FDM.estimate` stabilises the
     # numerics.
     assert central_fdm(2, 1, adapt=0)(lambda x: 0.0, 1.0) == 0.0
-    assert central_fdm(2, 1, adapt=1)(lambda x: x, 1.0) == 1.0
+    assert central_fdm(2, 1, adapt=1, step_max=np.inf)(lambda x: x, 1.0) == 1.0
+
+
+def test_factor():
+    assert central_fdm(3, 1, factor=5).estimate().eps == \
+           5 * central_fdm(3, 1, factor=1).estimate().eps
+
+
+def test_step_max():
+    assert central_fdm(20, 1, step_max=np.inf).estimate().step > 0.1
+    assert central_fdm(20, 1, step_max=0.1).estimate().step == 0.1
