@@ -13,8 +13,9 @@ See the `docs <https://wesselb.github.io/fdm>`__.
 -  `Multivariate Derivatives <#multivariate-derivatives>`__
 
    -  `Gradients <#gradients>`__
-   -  `Directional Derivatives <#directional-derivatives>`__
    -  `Jacobians <#jacobians>`__
+   -  `Jacobian-Vector Products (Directional
+      Derivatives) <#jacobian-vector-products-directional-derivatives>`__
    -  `Hessian-Vector Products <#hessian-vector-products>`__
 
 -  `Scalar Derivatives <#scalar-derivatives>`__
@@ -39,7 +40,7 @@ Multivariate Derivatives
 
 .. code:: python
 
-    from fdm import gradient, directional, jacobian, jvp, hvp
+    from fdm import gradient, jacobian, jvp, hvp
 
 For the purpose of illustration, let us consider a quadratic function:
 
@@ -72,25 +73,10 @@ Gradients
     >>> a @ x
     array([-1.38778668, 20.07146076, 16.25253519])
 
-Directional Derivatives
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: python
-
-    >>> v = np.array([0.5, 0.6, 0.7])  # A direction
-
-    >>> dir_deriv = directional(f, v)
-    >>> dir_deriv(x)
-    22.725757753354657
-
-    >>> np.sum(grad(x) * v)
-    22.72575775335481
-
 Jacobians
 ~~~~~~~~~
 
 .. code:: python
-
 
     >>> jac = jacobian(f)
     >>> jac(x)
@@ -117,8 +103,24 @@ But ``jacobian`` also works for multi-valued functions.
            [ 0.22646662,  4.72596213,  3.46435663],
            [-1.80432262,  3.46435663,  3.70938152]])
 
-Jacobian-Vector Products
-~~~~~~~~~~~~~~~~~~~~~~~~
+Jacobian-Vector Products (Directional Derivatives)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the scalar case, ``jvp`` computes directional derivatives:
+
+.. code:: python
+
+    >>> v = np.array([0.5, 0.6, 0.7])  # A direction
+
+    >>> dir_deriv = jvp(f, v) 
+    >>> dir_deriv(x)
+    22.725757753354657
+
+    >>> np.sum(grad(x) * v)
+    22.72575775335481
+
+In the multivariate case, ``jvp`` generalises to Jacobian-vector
+products:
 
 .. code:: python
 

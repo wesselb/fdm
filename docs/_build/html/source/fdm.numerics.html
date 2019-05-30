@@ -188,7 +188,7 @@ and <cite>abs(x - y) &lt; 2 eps_abs</cite> if <cite>x</cite> and <cite>y</cite> 
 
 <dl class="function">
 <dt id="fdm.numerics.check_sensitivity">
-<code class="descclassname">fdm.numerics.</code><code class="descname">check_sensitivity</code><span class="sig-paren">(</span><em>f</em>, <em>s_f</em>, <em>args</em>, <em>kw_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/numerics.html#check_sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.numerics.check_sensitivity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fdm.numerics.</code><code class="descname">check_sensitivity</code><span class="sig-paren">(</span><em>f</em>, <em>s_f</em>, <em>args</em>, <em>kw_args=None</em>, <em>eps_abs=2.220446049250313e-12</em>, <em>eps_rel=1.4901161193847656e-07</em>, <em>method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/numerics.html#check_sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.numerics.check_sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the sensitivity of a function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -201,6 +201,10 @@ the arguments and keyword arguments that <cite>f</cite> was evaluated at.</p></l
 <li><p><strong>args</strong> (<em>tuple</em>) – Arguments to test <cite>f</cite> at.</p></li>
 <li><p><strong>kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Keyword arguments to test <cite>f</cite> at. Defaults to
 <cite>{}</cite>.</p></li>
+<li><p><strong>eps_abs</strong> (<em>float</em><em>, </em><em>optional</em>) – Absolute tolerance.</p></li>
+<li><p><strong>eps_rel</strong> (<em>float</em><em>, </em><em>optional</em>) – Relative tolerance.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
+Defaults to <a class="reference internal" href="fdm.multivariate.html#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>

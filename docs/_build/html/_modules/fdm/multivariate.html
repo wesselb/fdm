@@ -158,10 +158,9 @@
 
 <span class="kn">from</span> <span class="nn">.fdm</span> <span class="k">import</span> <span class="n">central_fdm</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;directional&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;gradient&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;jacobian&#39;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span>
            <span class="s1">&#39;jvp&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;jacobian&#39;</span><span class="p">,</span>
            <span class="s1">&#39;hvp&#39;</span><span class="p">,</span>
            <span class="s1">&#39;default_adaptive_method&#39;</span><span class="p">,</span>
            <span class="s1">&#39;default_robust_method&#39;</span><span class="p">]</span>
@@ -177,25 +176,14 @@
 <span class="sd">&quot;&quot;&quot;:class:`.fdm.FDM`: Default robust method.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="directional"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.directional">[docs]</a><span class="k">def</span> <span class="nf">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the directional derivative of `f` in the direction `v`.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        f (function): Function to compute directional derivative of.</span>
-<span class="sd">        v (tensor): Direction.</span>
-<span class="sd">        method (:class:`.fdm.FDM`, optional): Finite difference method to use.</span>
-<span class="sd">            Defaults to :data:`.multivariate.default_adaptive_method`.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        function: Directional derivative.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">compute_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span>  <span class="c1"># Query the object once to get the dtype.</span>
-        <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eps</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">v</span><span class="p">),</span> <span class="n">zero</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">compute_derivative</span></div>
+<span class="k">def</span> <span class="nf">_get_at_index</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot index into a scalar.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
 
 
 <div class="viewcode-block" id="gradient"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.gradient">[docs]</a><span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
@@ -234,7 +222,7 @@
 
             <span class="c1"># Compute element of the gradient.</span>
             <span class="n">e</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">one</span>
-            <span class="n">grad</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">grad</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">jvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">e</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero</span>
 
         <span class="k">return</span> <span class="n">grad</span>
@@ -242,14 +230,28 @@
     <span class="k">return</span> <span class="n">compute_gradient</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_at_index</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">x</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot index into a scalar.&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
+<div class="viewcode-block" id="jvp"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.jvp">[docs]</a><span class="k">def</span> <span class="nf">jvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute a Jacobian-vector product, also known as a directional</span>
+<span class="sd">    derivative.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f (function): Function to compute Jacobian of.</span>
+<span class="sd">        v (tensor): Vector to multiply Jacobian with. Should be of the same form</span>
+<span class="sd">            as the arguments supplied to `f`.</span>
+<span class="sd">        method (:class:`.fdm.FDM`, optional): Finite difference method to use.</span>
+<span class="sd">            Defaults to :data:`.multivariate.default_adaptive_method`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        function: Jacobian of `f` multiplied by `v`, or directional</span>
+<span class="sd">            derivative in the direction `v`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">compute_jvp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span>  <span class="c1"># Query the object once to get the dtype.</span>
+        <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eps</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">v</span><span class="p">),</span> <span class="n">zero</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">compute_jvp</span></div>
 
 
 <div class="viewcode-block" id="jacobian"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.jacobian">[docs]</a><span class="k">def</span> <span class="nf">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
@@ -285,39 +287,6 @@
     <span class="k">return</span> <span class="n">compute_jacobian</span></div>
 
 
-<div class="viewcode-block" id="jvp"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.jvp">[docs]</a><span class="k">def</span> <span class="nf">jvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute a Jacobian-vector product.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        f (function): Function to compute Jacobian of.</span>
-<span class="sd">        v (tensor): Vector to multiply Jacobian with. Should be of the same form</span>
-<span class="sd">            as the arguments supplied to `f`.</span>
-<span class="sd">        method (:class:`.fdm.FDM`, optional): Finite difference method to use.</span>
-<span class="sd">            Defaults to :data:`.multivariate.default_adaptive_method`.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        function: Jacobian of `f` multiplied by `v`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">compute_jvp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="c1"># Query the object once to get the dtype and output size.</span>
-        <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">fx</span><span class="o">.</span><span class="n">dtype</span>
-        <span class="n">size_out</span> <span class="o">=</span> <span class="n">fx</span><span class="o">.</span><span class="n">size</span>
-
-        <span class="c1"># Construct the product.</span>
-        <span class="n">prod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="c1"># Loop over outputs to fill the product.</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size_out</span><span class="p">):</span>
-            <span class="n">prod</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="n">directional</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">_get_at_index</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">i</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">prod</span>
-
-    <span class="k">return</span> <span class="n">compute_jvp</span></div>
-
-
 <div class="viewcode-block" id="hvp"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.hvp">[docs]</a><span class="k">def</span> <span class="nf">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
         <span class="n">v</span><span class="p">,</span>
         <span class="n">jac_method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">,</span>
@@ -338,7 +307,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        function: Hessian of `f` multiplied by `v`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">directional</span><span class="p">(</span><span class="n">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">jac_method</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span> <span class="n">dir_method</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">jvp</span><span class="p">(</span><span class="n">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">jac_method</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span> <span class="n">dir_method</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

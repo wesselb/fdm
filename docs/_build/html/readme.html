@@ -89,9 +89,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multivariate-derivatives">Multivariate Derivatives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#gradients">Gradients</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#directional-derivatives">Directional Derivatives</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jacobians">Jacobians</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jacobian-vector-products">Jacobian-Vector Products</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jacobian-vector-products-directional-derivatives">Jacobian-Vector Products (Directional Derivatives)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hessian-vector-products">Hessian-Vector Products</a></li>
 </ul>
 </li>
@@ -175,8 +174,9 @@
 <li><p><a class="reference external" href="#multivariate-derivatives">Multivariate Derivatives</a></p>
 <ul>
 <li><p><a class="reference external" href="#gradients">Gradients</a></p></li>
-<li><p><a class="reference external" href="#directional-derivatives">Directional Derivatives</a></p></li>
 <li><p><a class="reference external" href="#jacobians">Jacobians</a></p></li>
+<li><p><a class="reference external" href="#jacobian-vector-products-directional-derivatives">Jacobian-Vector Products (Directional
+Derivatives)</a></p></li>
 <li><p><a class="reference external" href="#hessian-vector-products">Hessian-Vector Products</a></p></li>
 </ul>
 </li>
@@ -197,7 +197,7 @@ sequence of commands:</p>
 </div>
 <div class="section" id="multivariate-derivatives">
 <h2>Multivariate Derivatives<a class="headerlink" href="#multivariate-derivatives" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">jvp</span><span class="p">,</span> <span class="n">hvp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">jvp</span><span class="p">,</span> <span class="n">hvp</span>
 </pre></div>
 </div>
 <p>For the purpose of illustration, let us consider a quadratic function:</p>
@@ -223,19 +223,6 @@ array([-1.38778668, 20.07146076, 16.25253519])
 
 &gt;&gt;&gt; a @ x
 array([-1.38778668, 20.07146076, 16.25253519])
-</pre></div>
-</div>
-</div>
-<div class="section" id="directional-derivatives">
-<h3>Directional Derivatives<a class="headerlink" href="#directional-derivatives" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>  <span class="c1"># A direction</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span> <span class="o">=</span> <span class="n">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">22.725757753354657</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
-<span class="go">22.72575775335481</span>
 </pre></div>
 </div>
 </div>
@@ -266,8 +253,21 @@ array([[ 3.57224794,  0.22646662, -1.80432262],
 </pre></div>
 </div>
 </div>
-<div class="section" id="jacobian-vector-products">
-<h3>Jacobian-Vector Products<a class="headerlink" href="#jacobian-vector-products" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="jacobian-vector-products-directional-derivatives">
+<h3>Jacobian-Vector Products (Directional Derivatives)<a class="headerlink" href="#jacobian-vector-products-directional-derivatives" title="Permalink to this headline">¶</a></h3>
+<p>In the scalar case, <code class="docutils literal notranslate"><span class="pre">jvp</span></code> computes directional derivatives:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>  <span class="c1"># A direction</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span> <span class="o">=</span> <span class="n">jvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">22.725757753354657</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+<span class="go">22.72575775335481</span>
+</pre></div>
+</div>
+<p>In the multivariate case, <code class="docutils literal notranslate"><span class="pre">jvp</span></code> generalises to Jacobian-vector
+products:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = jvp(f2, v)
 &gt;&gt;&gt; prod(x)
 array([0.65897811, 5.37386023, 3.77301973])
