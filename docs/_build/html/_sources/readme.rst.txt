@@ -39,7 +39,7 @@ Multivariate Derivatives
 
 .. code:: python
 
-    from fdm import gradient, directional, jacobian, hvp
+    from fdm import gradient, directional, jacobian, jvp, hvp
 
 For the purpose of illustration, let us consider a quadratic function:
 
@@ -47,9 +47,9 @@ For the purpose of illustration, let us consider a quadratic function:
 
     >>> a = np.random.randn(3, 3); a = a @ a.T
     >>> a
-    array([[ 1.56063275,  0.80421633, -2.35877318],
-           [ 0.80421633,  4.22782295,  0.22956733],
-           [-2.35877318,  0.22956733,  4.41663688]])
+    array([[ 3.57224794,  0.22646662, -1.80432262],
+           [ 0.22646662,  4.72596213,  3.46435663],
+           [-1.80432262,  3.46435663,  3.70938152]])
            
     >>> def f(x):
     ...     return 0.5 * x @ a @ x
@@ -67,10 +67,10 @@ Gradients
 
     >>> grad = gradient(f)
     >>> grad(x)
-    array([-3.90725414,  9.94856421, 11.3502721 ])
+    array([-1.38778668, 20.07146076, 16.25253519])
 
     >>> a @ x
-    array([-3.90725414,  9.94856421, 11.3502721 ])
+    array([-1.38778668, 20.07146076, 16.25253519])
 
 Directional Derivatives
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,10 +81,10 @@ Directional Derivatives
 
     >>> dir_deriv = directional(f, v)
     >>> dir_deriv(x)
-    11.960701923320736
+    22.725757753354657
 
     >>> np.sum(grad(x) * v)
-    11.960701923321531
+    22.72575775335481
 
 Jacobians
 ~~~~~~~~~
@@ -94,10 +94,10 @@ Jacobians
 
     >>> jac = jacobian(f)
     >>> jac(x)
-    array([[-3.90725414,  9.94856421, 11.3502721 ]])
+    array([[-1.38778668, 20.07146076, 16.25253519]])
 
     >>> a @ x
-    array([-3.90725414,  9.94856421, 11.3502721 ])
+    array([-1.38778668, 20.07146076, 16.25253519])
 
 But ``jacobian`` also works for multi-valued functions.
 
@@ -108,14 +108,26 @@ But ``jacobian`` also works for multi-valued functions.
 
     >>> jac2 = jacobian(f2)
     >>> jac2(x)
-    array([[ 1.56063275,  0.80421633, -2.35877318],
-           [ 0.80421633,  4.22782295,  0.22956733],
-           [-2.35877318,  0.22956733,  4.41663688]])
+    array([[ 3.57224794,  0.22646662, -1.80432262],
+           [ 0.22646662,  4.72596213,  3.46435663],
+           [-1.80432262,  3.46435663,  3.70938152]])
            
     >>> a
-    array([[ 1.56063275,  0.80421633, -2.35877318],
-           [ 0.80421633,  4.22782295,  0.22956733],
-           [-2.35877318,  0.22956733,  4.41663688]])
+    array([[ 3.57224794,  0.22646662, -1.80432262],
+           [ 0.22646662,  4.72596213,  3.46435663],
+           [-1.80432262,  3.46435663,  3.70938152]])
+
+Jacobian-Vector Products
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    >>> prod = jvp(f2, v)
+    >>> prod(x)
+    array([0.65897811, 5.37386023, 3.77301973])
+
+    >>> a @ v
+    array([0.65897811, 5.37386023, 3.77301973])
 
 Hessian-Vector Products
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,10 +136,10 @@ Hessian-Vector Products
 
     >>> prod = hvp(f, v)
     >>> prod(x)
-    array([[-0.38829506,  3.09949906,  2.04999963]])
+    array([[0.6589781 , 5.37386023, 3.77301973]])
 
     >>> 0.5 * (a + a.T) @ v
-    array([-0.38829506,  3.09949906,  2.04999962])
+    array([0.65897811, 5.37386023, 3.77301973])
 
 Scalar Derivatives
 ------------------

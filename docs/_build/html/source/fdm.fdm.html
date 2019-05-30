@@ -162,7 +162,7 @@
 <span id="fdm-fdm-module"></span><h1>fdm.fdm module<a class="headerlink" href="#module-fdm.fdm" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fdm.fdm.FDM">
-<em class="property">class </em><code class="descclassname">fdm.fdm.</code><code class="descname">FDM</code><span class="sig-paren">(</span><em>grid</em>, <em>deriv</em>, <em>bound_estimator=&lt;function _default_bound_estimator&gt;</em>, <em>factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#FDM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.FDM" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fdm.fdm.</code><code class="descname">FDM</code><span class="sig-paren">(</span><em>grid</em>, <em>deriv</em>, <em>bound_estimator=&lt;function _default_bound_estimator&gt;</em>, <em>factor=1</em>, <em>step_max=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/fdm.html#FDM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.fdm.FDM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A finite difference method.</p>
 <p>Call the finite difference method with a function <cite>f</cite>, an input location
@@ -182,6 +182,9 @@ upper bound on the <cite>len(grid)`th order derivative of `f</cite> at <cite>x</
 Defaults to <code class="xref py py-data docutils literal notranslate"><span class="pre">fdm._default_bound_estimator</span></code>.</p></li>
 <li><p><strong>factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Estimate of the relative error on function
 evaluations as a multiple of the machine epsilon. Defaults to <cite>1</cite>.</p></li>
+<li><p><strong>step_max</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum step size, to prevent very
+large step sizes in the case of high-order methods. Defaults to
+<cite>0.1</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -264,6 +267,18 @@ inadequate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fdm.fdm.FDM.step_max">
+<code class="descname">step_max</code><a class="headerlink" href="#fdm.fdm.FDM.step_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum step size, to prevent very
+large step sizes in the case of high-order methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float, optional</p>
 </dd>
 </dl>
 </dd></dl>

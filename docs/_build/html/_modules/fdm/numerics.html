@@ -211,7 +211,7 @@
     <span class="c1"># Evaluate the sensitivity of the function.</span>
     <span class="n">s_args</span> <span class="o">=</span> <span class="n">s_f</span><span class="p">(</span><span class="n">y_sens</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
 
-    <span class="c1"># Ensure that `s_args` is as tuple.</span>
+    <span class="c1"># Ensure that `s_args` is a tuple.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">s_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_args</span><span class="p">,)</span>
 

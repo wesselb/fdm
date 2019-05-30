@@ -227,9 +227,32 @@ Defaults to <a class="reference internal" href="#fdm.multivariate.default_adapti
 </dd></dl>
 
 <dl class="function">
+<dt id="fdm.multivariate.jvp">
+<code class="descclassname">fdm.multivariate.</code><code class="descname">jvp</code><span class="sig-paren">(</span><em>f</em>, <em>v</em>, <em>method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#jvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.jvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a Jacobian-vector product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>function</em>) – Function to compute Jacobian of.</p></li>
+<li><p><strong>v</strong> (<em>tensor</em>) – Vector to multiply Jacobian with. Should be of the same form
+as the arguments supplied to <cite>f</cite>.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
+Defaults to <a class="reference internal" href="#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian of <cite>f</cite> multiplied by <cite>v</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="fdm.multivariate.hvp">
 <code class="descclassname">fdm.multivariate.</code><code class="descname">hvp</code><span class="sig-paren">(</span><em>f</em>, <em>v</em>, <em>jac_method=&lt;fdm.fdm.FDM object&gt;</em>, <em>dir_method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#hvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.hvp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a Hessian–vector product.</p>
+<dd><p>Compute a Hessian-vector product.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

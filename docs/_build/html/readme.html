@@ -91,6 +91,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#gradients">Gradients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#directional-derivatives">Directional Derivatives</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jacobians">Jacobians</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jacobian-vector-products">Jacobian-Vector Products</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hessian-vector-products">Hessian-Vector Products</a></li>
 </ul>
 </li>
@@ -196,15 +197,15 @@ sequence of commands:</p>
 </div>
 <div class="section" id="multivariate-derivatives">
 <h2>Multivariate Derivatives<a class="headerlink" href="#multivariate-derivatives" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">hvp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fdm</span> <span class="kn">import</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">directional</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">jvp</span><span class="p">,</span> <span class="n">hvp</span>
 </pre></div>
 </div>
 <p>For the purpose of illustration, let us consider a quadratic function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; a = np.random.randn(3, 3); a = a @ a.T
 &gt;&gt;&gt; a
-array([[ 1.56063275,  0.80421633, -2.35877318],
-       [ 0.80421633,  4.22782295,  0.22956733],
-       [-2.35877318,  0.22956733,  4.41663688]])
+array([[ 3.57224794,  0.22646662, -1.80432262],
+       [ 0.22646662,  4.72596213,  3.46435663],
+       [-1.80432262,  3.46435663,  3.70938152]])
 
 &gt;&gt;&gt; def f(x):
 ...     return 0.5 * x @ a @ x
@@ -218,10 +219,10 @@ array([[ 1.56063275,  0.80421633, -2.35877318],
 <h3>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; grad = gradient(f)
 &gt;&gt;&gt; grad(x)
-array([-3.90725414,  9.94856421, 11.3502721 ])
+array([-1.38778668, 20.07146076, 16.25253519])
 
 &gt;&gt;&gt; a @ x
-array([-3.90725414,  9.94856421, 11.3502721 ])
+array([-1.38778668, 20.07146076, 16.25253519])
 </pre></div>
 </div>
 </div>
@@ -231,10 +232,10 @@ array([-3.90725414,  9.94856421, 11.3502721 ])
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span> <span class="o">=</span> <span class="n">directional</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dir_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">11.960701923320736</span>
+<span class="go">22.725757753354657</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
-<span class="go">11.960701923321531</span>
+<span class="go">22.72575775335481</span>
 </pre></div>
 </div>
 </div>
@@ -242,10 +243,10 @@ array([-3.90725414,  9.94856421, 11.3502721 ])
 <h3>Jacobians<a class="headerlink" href="#jacobians" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; jac = jacobian(f)
 &gt;&gt;&gt; jac(x)
-array([[-3.90725414,  9.94856421, 11.3502721 ]])
+array([[-1.38778668, 20.07146076, 16.25253519]])
 
 &gt;&gt;&gt; a @ x
-array([-3.90725414,  9.94856421, 11.3502721 ])
+array([-1.38778668, 20.07146076, 16.25253519])
 </pre></div>
 </div>
 <p>But <code class="docutils literal notranslate"><span class="pre">jacobian</span></code> also works for multi-valued functions.</p>
@@ -254,14 +255,25 @@ array([-3.90725414,  9.94856421, 11.3502721 ])
 
 &gt;&gt;&gt; jac2 = jacobian(f2)
 &gt;&gt;&gt; jac2(x)
-array([[ 1.56063275,  0.80421633, -2.35877318],
-       [ 0.80421633,  4.22782295,  0.22956733],
-       [-2.35877318,  0.22956733,  4.41663688]])
+array([[ 3.57224794,  0.22646662, -1.80432262],
+       [ 0.22646662,  4.72596213,  3.46435663],
+       [-1.80432262,  3.46435663,  3.70938152]])
 
 &gt;&gt;&gt; a
-array([[ 1.56063275,  0.80421633, -2.35877318],
-       [ 0.80421633,  4.22782295,  0.22956733],
-       [-2.35877318,  0.22956733,  4.41663688]])
+array([[ 3.57224794,  0.22646662, -1.80432262],
+       [ 0.22646662,  4.72596213,  3.46435663],
+       [-1.80432262,  3.46435663,  3.70938152]])
+</pre></div>
+</div>
+</div>
+<div class="section" id="jacobian-vector-products">
+<h3>Jacobian-Vector Products<a class="headerlink" href="#jacobian-vector-products" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = jvp(f2, v)
+&gt;&gt;&gt; prod(x)
+array([0.65897811, 5.37386023, 3.77301973])
+
+&gt;&gt;&gt; a @ v
+array([0.65897811, 5.37386023, 3.77301973])
 </pre></div>
 </div>
 </div>
@@ -269,10 +281,10 @@ array([[ 1.56063275,  0.80421633, -2.35877318],
 <h3>Hessian-Vector Products<a class="headerlink" href="#hessian-vector-products" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = hvp(f, v)
 &gt;&gt;&gt; prod(x)
-array([[-0.38829506,  3.09949906,  2.04999963]])
+array([[0.6589781 , 5.37386023, 3.77301973]])
 
 &gt;&gt;&gt; 0.5 * (a + a.T) @ v
-array([-0.38829506,  3.09949906,  2.04999962])
+array([0.65897811, 5.37386023, 3.77301973])
 </pre></div>
 </div>
 </div>

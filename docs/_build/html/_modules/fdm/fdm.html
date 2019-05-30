@@ -213,6 +213,9 @@
 <span class="sd">            Defaults to :data:`.fdm._default_bound_estimator`.</span>
 <span class="sd">        factor (float, optional): Estimate of the relative error on function</span>
 <span class="sd">            evaluations as a multiple of the machine epsilon. Defaults to `1`.</span>
+<span class="sd">        step_max (float, optional): Maximum step size, to prevent very</span>
+<span class="sd">            large step sizes in the case of high-order methods. Defaults to</span>
+<span class="sd">            `0.1`.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        grid (list): Relative spacing of samples of the function used by the</span>
@@ -228,6 +231,8 @@
 <span class="sd">        step (float): Estimate of the step size. This estimate depends on</span>
 <span class="sd">            `eps` and `bound`, and may be inadequate if `eps` and `bound` are</span>
 <span class="sd">            inadequate.</span>
+<span class="sd">        step_max (float, optional): Maximum step size, to prevent very</span>
+<span class="sd">            large step sizes in the case of high-order methods.</span>
 <span class="sd">        acc (float): Estimate of the accuracy of the method. This estimate</span>
 <span class="sd">            depends on `eps` and `bound`, and may be inadequate if `eps` and</span>
 <span class="sd">            `bound` are inadequate.</span>
@@ -237,7 +242,8 @@
                  <span class="n">grid</span><span class="p">,</span>
                  <span class="n">deriv</span><span class="p">,</span>
                  <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_default_bound_estimator</span><span class="p">,</span>
-                 <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                 <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">step_max</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span> <span class="o">=</span> <span class="n">deriv</span>
@@ -247,6 +253,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_max</span> <span class="o">=</span> <span class="n">step_max</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Order of the method must be strictly greater &#39;</span>
@@ -288,6 +295,9 @@
         <span class="n">c2</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">*</span> <span class="n">c1</span> <span class="o">/</span> <span class="n">c2</span><span class="p">)</span> \
                     <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+
+        <span class="c1"># Cap the step size.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_max</span><span class="p">)</span>
 
         <span class="c1"># Estimate accuracy.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">+</span> \
