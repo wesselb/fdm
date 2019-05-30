@@ -6,14 +6,15 @@ import logging
 
 import numpy as np
 
-from .multivariate import jvp
+from .multivariate import jvp, default_adaptive_method
 
 __all__ = ['approx_equal', 'check_sensitivity']
 
 log = logging.getLogger(__name__)
 
 
-def approx_equal(x, y,
+def approx_equal(x,
+                 y,
                  eps_abs=1e2 * np.finfo(float).eps,
                  eps_rel=np.sqrt(np.finfo(float).eps)):
     """Check whether `x` and `y` are approximately equal.
@@ -37,7 +38,13 @@ def approx_equal(x, y,
                   eps_abs + eps_rel * np.maximum(np.abs(x), np.abs(y)))
 
 
-def check_sensitivity(f, s_f, args, kw_args=None):
+def check_sensitivity(f,
+                      s_f,
+                      args,
+                      kw_args=None,
+                      eps_abs=1e4 * np.finfo(float).eps,
+                      eps_rel=1e1 * np.sqrt(np.finfo(float).eps),
+                      method=default_adaptive_method):
     """Check the sensitivity of a function.
 
     Args:
@@ -49,6 +56,11 @@ def check_sensitivity(f, s_f, args, kw_args=None):
         args (tuple): Arguments to test `f` at.
         kw_args (dict, optional): Keyword arguments to test `f` at. Defaults to
             `{}`.
+        eps_abs (float, optional): Absolute tolerance.
+        eps_rel (float, optional): Relative tolerance.
+        method (:class:`.fdm.FDM`, optional): Finite difference method to use.
+            Defaults to :data:`.multivariate.default_adaptive_method`.
+
     """
     # Set default `kw_args`.
     if kw_args is None:
@@ -84,11 +96,11 @@ def check_sensitivity(f, s_f, args, kw_args=None):
 
         # Compute the directional directive w.r.t. the inner product of the
         # output and `y_sens` numerically and exactly.
-        estimate = np.sum(jvp(f_i, v)(args[i]) * y_sens)
+        estimate = np.sum(jvp(f_i, v, method=method)(args[i]) * y_sens)
         exact = np.sum(v * s_args[i])
 
         # Assert that the results match.
-        if not approx_equal(estimate, exact, eps_abs=1e-8, eps_rel=1e-8):
+        if not approx_equal(estimate, exact, eps_abs=eps_abs, eps_rel=eps_rel):
             raise AssertionError('Sensitivity of argument {} of function "{}" '
                                  'did not match numerical estimate.'
                                  ''.format(i + 1, f.__name__))
