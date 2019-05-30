@@ -13,8 +13,8 @@ See the [docs](https://wesselb.github.io/fdm).
 * [Installation](#installation)
 * [Multivariate Derivatives](#multivariate-derivatives)
     - [Gradients](#gradients)
-    - [Directional Derivatives](#directional-derivatives)
     - [Jacobians](#jacobians)
+    - [Jacobian-Vector Products (Directional Derivatives)](#jacobian-vector-products-directional-derivatives)
     - [Hessian-Vector Products](#hessian-vector-products)
 * [Scalar Derivatives](#scalar-derivatives)
 * [Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework](#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework)
@@ -33,7 +33,7 @@ make install
 ## Multivariate Derivatives
 
 ```python
-from fdm import gradient, directional, jacobian, jvp, hvp
+from fdm import gradient, jacobian, jvp, hvp
 ```
 
 For the purpose of illustration, let us consider a quadratic function:
@@ -66,25 +66,9 @@ array([-1.38778668, 20.07146076, 16.25253519])
 array([-1.38778668, 20.07146076, 16.25253519])
 ```
 
-
-### Directional Derivatives
-
-```python
->>> v = np.array([0.5, 0.6, 0.7])  # A direction
-
->>> dir_deriv = directional(f, v)
->>> dir_deriv(x)
-22.725757753354657
-
->>> np.sum(grad(x) * v)
-22.72575775335481
-```
-
-
 ### Jacobians
 
 ```python
-
 >>> jac = jacobian(f)
 >>> jac(x)
 array([[-1.38778668, 20.07146076, 16.25253519]])
@@ -111,7 +95,22 @@ array([[ 3.57224794,  0.22646662, -1.80432262],
        [-1.80432262,  3.46435663,  3.70938152]])
 ```
 
-### Jacobian-Vector Products
+### Jacobian-Vector Products (Directional Derivatives)
+
+In the scalar case, `jvp` computes directional derivatives:
+
+```python
+>>> v = np.array([0.5, 0.6, 0.7])  # A direction
+
+>>> dir_deriv = jvp(f, v) 
+>>> dir_deriv(x)
+22.725757753354657
+
+>>> np.sum(grad(x) * v)
+22.72575775335481
+```
+
+In the multivariate case, `jvp` generalises to Jacobian-vector products:
 
 ```python
 >>> prod = jvp(f2, v)
@@ -132,8 +131,6 @@ array([[0.6589781 , 5.37386023, 3.77301973]])
 >>> 0.5 * (a + a.T) @ v
 array([0.65897811, 5.37386023, 3.77301973])
 ```
-
-
 
 ## Scalar Derivatives
 ```python

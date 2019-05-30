@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 import pytest
 
-from fdm import central_fdm, directional, gradient, jacobian, jvp, hvp
+from fdm import central_fdm, gradient, jvp, jacobian, hvp
 from fdm.multivariate import _get_at_index
 from .util import allclose
 
@@ -30,7 +30,19 @@ def test_gradient_vector_argument():
         allclose(2 * a * x, gradient(f, m)(x))
 
 
-def test_directional():
+def test_jvp():
+    m = central_fdm(10, 1)
+    a = np.random.randn(3, 3)
+
+    def f(x):
+        return np.matmul(a, x)
+
+    x = np.random.randn(3)
+    v = np.random.randn(3)
+    allclose(jvp(f, v, m)(x), np.matmul(a, v))
+
+
+def test_jvp_directional():
     m = central_fdm(10, 1)
     a = np.random.randn(3)
 
@@ -39,7 +51,7 @@ def test_directional():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    allclose(np.sum(gradient(f, m)(x) * v), directional(f, v, m)(x))
+    allclose(np.sum(gradient(f, m)(x) * v), jvp(f, v, m)(x))
 
 
 def test_jacobian():
@@ -51,18 +63,6 @@ def test_jacobian():
 
     x = np.random.randn(3)
     allclose(jacobian(f, m)(x), a)
-
-
-def test_jvp():
-    m = central_fdm(10, 1)
-    a = np.random.randn(3, 3)
-
-    def f(x):
-        return np.matmul(a, x)
-
-    x = np.random.randn(3)
-    v = np.random.randn(3)
-    allclose(jvp(f, v, m)(x), np.matmul(a, v))
 
 
 def test_hvp():

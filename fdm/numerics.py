@@ -2,12 +2,14 @@
 
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
 import logging
 
-from .multivariate import directional
+import numpy as np
+
+from .multivariate import jvp
 
 __all__ = ['approx_equal', 'check_sensitivity']
+
 log = logging.getLogger(__name__)
 
 
@@ -82,7 +84,7 @@ def check_sensitivity(f, s_f, args, kw_args=None):
 
         # Compute the directional directive w.r.t. the inner product of the
         # output and `y_sens` numerically and exactly.
-        estimate = np.sum(directional(f_i, v)(args[i]) * y_sens)
+        estimate = np.sum(jvp(f_i, v)(args[i]) * y_sens)
         exact = np.sum(v * s_args[i])
 
         # Assert that the results match.

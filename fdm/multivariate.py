@@ -8,10 +8,9 @@ import numpy as np
 
 from .fdm import central_fdm
 
-__all__ = ['directional',
-           'gradient',
-           'jacobian',
+__all__ = ['gradient',
            'jvp',
+           'jacobian',
            'hvp',
            'default_adaptive_method',
            'default_robust_method']
@@ -27,25 +26,14 @@ default_robust_method = central_fdm(order=5,
 """:class:`.fdm.FDM`: Default robust method."""
 
 
-def directional(f, v, method=default_adaptive_method):
-    """Compute the directional derivative of `f` in the direction `v`.
-
-    Args:
-        f (function): Function to compute directional derivative of.
-        v (tensor): Direction.
-        method (:class:`.fdm.FDM`, optional): Finite difference method to use.
-            Defaults to :data:`.multivariate.default_adaptive_method`.
-
-    Returns:
-        function: Directional derivative.
-    """
-
-    def compute_derivative(x):
-        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
-        zero = np.array(0).astype(dtype)
-        return method(lambda eps: f(x + eps * v), zero)
-
-    return compute_derivative
+def _get_at_index(x, i):
+    if x.shape == ():
+        if i == 0:
+            return x
+        else:
+            raise RuntimeError('Cannot index into a scalar.')
+    else:
+        return x[np.unravel_index(i, x.shape)]
 
 
 def gradient(f, method=default_adaptive_method):
@@ -84,7 +72,7 @@ def gradient(f, method=default_adaptive_method):
 
             # Compute element of the gradient.
             e[ind] = one
-            grad[ind] = directional(f, e, method)(x)
+            grad[ind] = jvp(f, e, method)(x)
             e[ind] = zero
 
         return grad
@@ -92,14 +80,28 @@ def gradient(f, method=default_adaptive_method):
     return compute_gradient
 
 
-def _get_at_index(x, i):
-    if x.shape == ():
-        if i == 0:
-            return x
-        else:
-            raise RuntimeError('Cannot index into a scalar.')
-    else:
-        return x[np.unravel_index(i, x.shape)]
+def jvp(f, v, method=default_adaptive_method):
+    """Compute a Jacobian-vector product, also known as a directional
+    derivative.
+
+    Args:
+        f (function): Function to compute Jacobian of.
+        v (tensor): Vector to multiply Jacobian with. Should be of the same form
+            as the arguments supplied to `f`.
+        method (:class:`.fdm.FDM`, optional): Finite difference method to use.
+            Defaults to :data:`.multivariate.default_adaptive_method`.
+
+    Returns:
+        function: Jacobian of `f` multiplied by `v`, or directional
+            derivative in the direction `v`.
+    """
+
+    def compute_jvp(x):
+        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
+        zero = np.array(0).astype(dtype)
+        return method(lambda eps: f(x + eps * v), zero)
+
+    return compute_jvp
 
 
 def jacobian(f, method=default_adaptive_method):
@@ -135,39 +137,6 @@ def jacobian(f, method=default_adaptive_method):
     return compute_jacobian
 
 
-def jvp(f, v, method=default_adaptive_method):
-    """Compute a Jacobian-vector product.
-
-    Args:
-        f (function): Function to compute Jacobian of.
-        v (tensor): Vector to multiply Jacobian with. Should be of the same form
-            as the arguments supplied to `f`.
-        method (:class:`.fdm.FDM`, optional): Finite difference method to use.
-            Defaults to :data:`.multivariate.default_adaptive_method`.
-
-    Returns:
-        function: Jacobian of `f` multiplied by `v`.
-    """
-
-    def compute_jvp(x):
-        # Query the object once to get the dtype and output size.
-        fx = np.array(f(x))
-        dtype = fx.dtype
-        size_out = fx.size
-
-        # Construct the product.
-        prod = np.empty_like(fx, dtype=dtype)
-
-        # Loop over outputs to fill the product.
-        for i in range(size_out):
-            prod[i] = \
-                directional(lambda y: _get_at_index(f(y), i), v, method)(x)
-
-        return prod
-
-    return compute_jvp
-
-
 def hvp(f,
         v,
         jac_method=default_adaptive_method,
@@ -188,4 +157,4 @@ def hvp(f,
     Returns:
         function: Hessian of `f` multiplied by `v`.
     """
-    return directional(jacobian(f, jac_method), v, dir_method)
+    return jvp(jacobian(f, jac_method), v, dir_method)
