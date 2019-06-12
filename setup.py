@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function
 
 from setuptools import find_packages, setup
 
-requirements = []
+requirements = ['numpy']
 
-setup(packages=find_packages(exclude=('tests', 'docs')),
+setup(packages=find_packages(exclude=('docs')),
       install_requires=requirements)
