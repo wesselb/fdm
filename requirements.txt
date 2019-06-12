@@ -1,1 +1,5 @@
-numpy
+# Requirements for development, testing, and documentation.
+-e .
+pytest
+pytest-cov
+coveralls
