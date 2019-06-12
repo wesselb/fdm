@@ -6,5 +6,5 @@ from setuptools import find_packages, setup
 
 requirements = ['numpy']
 
-setup(packages=find_packages(exclude=('docs')),
+setup(packages=find_packages(exclude=['docs']),
       install_requires=requirements)
