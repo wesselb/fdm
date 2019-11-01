@@ -65,7 +65,7 @@ class FDM(object):
             evaluations as a multiple of the machine epsilon. Defaults to `1`.
         step_max (float, optional): Maximum step size, to prevent very
             large step sizes in the case of high-order methods. Defaults to
-            `0.1`.
+            `1`.
 
     Attributes:
         grid (list): Relative spacing of samples of the function used by the

@@ -37,7 +37,7 @@ def _get_at_index(x, i):
 
 
 def gradient(f, method=default_adaptive_method):
-    """Compute the gradient of a `f`.
+    """Compute the gradient of `f`.
 
     The function `f` should be scalar valued.
 
