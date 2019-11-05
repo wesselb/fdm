@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import, division, print_function
-
 import pytest
 
 from fdm import approx_equal, check_sensitivity

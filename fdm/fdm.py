@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import, division, print_function
+import logging
 
 import numpy as np
-import logging
 
 __all__ = ['FDM',
            'forward_fdm',
@@ -44,7 +41,7 @@ def _adaptive_bound_estimator(method, order, condition, adapt, **kw_args):
     return estimator
 
 
-class FDM(object):
+class FDM:
     """A finite difference method.
 
     Call the finite difference method with a function `f`, an input location
