@@ -5,10 +5,9 @@
 [![Latest Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://wesselb.github.io/fdm)
 
 FDM estimates derivatives with finite differences.
-
 See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
-See the [docs](https://wesselb.github.io/fdm).
+*Note:* FDM requires Python 3.6 or higher.
 
 * [Installation](#installation)
 * [Multivariate Derivatives](#multivariate-derivatives)
