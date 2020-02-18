@@ -7,8 +7,6 @@
 FDM estimates derivatives with finite differences.
 See also [FDM.jl](https://github.com/invenia/FDM.jl).
 
-*Note:* FDM requires Python 3.6 or higher.
-
 * [Installation](#installation)
 * [Multivariate Derivatives](#multivariate-derivatives)
     - [Gradients](#gradients)
@@ -19,6 +17,9 @@ See also [FDM.jl](https://github.com/invenia/FDM.jl).
 * [Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework](#testing-sensitivities-in-a-reverse-mode-automatic-differentation-framework)
 
 ## Installation
+
+FDM requires Python 3.6 or higher.
+
 ```bash
 pip install fdm
 ```
