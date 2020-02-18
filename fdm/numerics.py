@@ -77,9 +77,8 @@ def check_sensitivity(f,
 
     # Check that the correct number of sensitivities is given.
     if not len(args) == len(s_args):
-        raise AssertionError('Number of sensitivities ({}) does not match '
-                             'the number of arguments ({}).'
-                             ''.format(len(args), len(s_args)))
+        raise AssertionError(f'Number of sensitivities ({len(args)}) does not '
+                             f'match the number of arguments ({len(s_args)}).')
 
     # Walk through the arguments.
     for i in range(len(args)):
@@ -97,6 +96,7 @@ def check_sensitivity(f,
 
         # Assert that the results match.
         if not approx_equal(estimate, exact, eps_abs=eps_abs, eps_rel=eps_rel):
-            raise AssertionError('Sensitivity of argument {} of function "{}" '
-                                 'did not match numerical estimate.'
-                                 ''.format(i + 1, f.__name__))
+            raise AssertionError(f'Sensitivity of argument {i + 1} of '
+                                 f'function "{f.__name__}" did not match '
+                                 f'numerical estimate. The error is '
+                                 f'{np.abs(exact - estimate):.3e}.')
