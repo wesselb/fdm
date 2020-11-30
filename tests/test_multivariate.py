@@ -3,7 +3,7 @@ import pytest
 
 from fdm import central_fdm, gradient, jvp, jacobian, hvp
 from fdm.multivariate import _get_at_index
-from .util import allclose
+from .util import approx
 
 
 def test_get_index():
@@ -14,16 +14,15 @@ def test_get_index():
 def test_gradient_vector_argument():
     m = central_fdm(10, 1)
 
-    for a, x in zip([np.random.randn(),
-                     np.random.randn(3),
-                     np.random.randn(3, 3)],
-                    [np.random.randn(),
-                     np.random.randn(3),
-                     np.random.randn(3, 3)]):
+    for a, x in zip(
+        [np.random.randn(), np.random.randn(3), np.random.randn(3, 3)],
+        [np.random.randn(), np.random.randn(3), np.random.randn(3, 3)],
+    ):
+
         def f(y):
             return np.sum(a * y * y)
 
-        allclose(2 * a * x, gradient(f, m)(x))
+        approx(2 * a * x, gradient(f, m)(x))
 
 
 def test_jvp():
@@ -35,7 +34,7 @@ def test_jvp():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    allclose(jvp(f, v, m)(x), np.matmul(a, v))
+    approx(jvp(f, v, m)(x), np.matmul(a, v))
 
 
 def test_jvp_directional():
@@ -47,7 +46,7 @@ def test_jvp_directional():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    allclose(np.sum(gradient(f, m)(x) * v), jvp(f, v, m)(x))
+    approx(np.sum(gradient(f, m)(x) * v), jvp(f, v, m)(x))
 
 
 def test_jacobian():
@@ -58,7 +57,7 @@ def test_jacobian():
         return np.matmul(a, x)
 
     x = np.random.randn(3)
-    allclose(jacobian(f, m)(x), a)
+    approx(jacobian(f, m)(x), a)
 
 
 def test_hvp():
@@ -71,5 +70,7 @@ def test_hvp():
 
     x = np.random.randn(3)
     v = np.random.randn(3)
-    allclose(hvp(f, v, jac_method=m_jac, dir_method=m_dir)(x),
-             np.matmul(0.5 * (a + a.T), v)[None, :])
+    approx(
+        hvp(f, v, jac_method=m_jac, dir_method=m_dir)(x),
+        np.matmul(0.5 * (a + a.T), v)[None, :],
+    )

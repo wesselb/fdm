@@ -41,7 +41,7 @@ def test_sensitivity():
 
     with pytest.raises(AssertionError):
         check_sensitivity(g, s_g, (1,))
-    check_sensitivity(g, s_g, (1,), {'option': True})
+    check_sensitivity(g, s_g, (1,), {"option": True})
 
     # Check that the the number of sensitivities must match the number of
     # arguments.

@@ -4,21 +4,20 @@ import numpy as np
 
 from .fdm import central_fdm
 
-__all__ = ['gradient',
-           'jvp',
-           'jacobian',
-           'hvp',
-           'default_adaptive_method',
-           'default_robust_method']
+__all__ = [
+    "gradient",
+    "jvp",
+    "jacobian",
+    "hvp",
+    "default_adaptive_method",
+    "default_robust_method",
+]
 log = logging.getLogger(__name__)
 
 default_adaptive_method = central_fdm(order=5, deriv=1, adapt=1)
 """:class:`.fdm.FDM`: Default adaptive method."""
 
-default_robust_method = central_fdm(order=5,
-                                    deriv=1,
-                                    adapt=0,
-                                    condition=1e4)
+default_robust_method = central_fdm(order=5, deriv=1, adapt=0, condition=1e4)
 """:class:`.fdm.FDM`: Default robust method."""
 
 
@@ -27,7 +26,7 @@ def _get_at_index(x, i):
         if i == 0:
             return x
         else:
-            raise RuntimeError('Cannot index into a scalar.')
+            raise RuntimeError("Cannot index into a scalar.")
     else:
         return x[np.unravel_index(i, x.shape)]
 
@@ -133,10 +132,7 @@ def jacobian(f, method=default_adaptive_method):
     return compute_jacobian
 
 
-def hvp(f,
-        v,
-        jac_method=default_adaptive_method,
-        dir_method=default_robust_method):
+def hvp(f, v, jac_method=default_adaptive_method, dir_method=default_robust_method):
     """Compute a Hessian-vector product.
 
     Args:
