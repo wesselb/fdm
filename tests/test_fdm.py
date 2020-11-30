@@ -2,7 +2,13 @@ import numpy as np
 import pytest
 
 from fdm import forward_fdm, backward_fdm, central_fdm, FDM
-from .util import allclose
+from fdm.fdm import _estimate_magnitude
+from .util import approx
+
+
+def test_estimate_magnitude():
+    assert _estimate_magnitude(lambda x: x, 0) == 0.1
+    assert _estimate_magnitude(lambda x: x, 1) == 1
 
 
 def test_construction():
@@ -12,14 +18,14 @@ def test_construction():
 
 def test_correctness():
     for f in [forward_fdm, backward_fdm, central_fdm]:
-        allclose(f(10, 1)(np.sin, 1), np.cos(1))
-        allclose(f(10, 2)(np.sin, 1), -np.sin(1))
+        approx(f(10, 1)(np.sin, 1), np.cos(1))
+        approx(f(10, 2)(np.sin, 1), -np.sin(1))
 
-        allclose(f(10, 1)(np.exp, 1), np.exp(1))
-        allclose(f(10, 2)(np.exp, 1), np.exp(1))
+        approx(f(10, 1)(np.exp, 1), np.exp(1))
+        approx(f(10, 2)(np.exp, 1), np.exp(1))
 
-        allclose(f(10, 1)(np.sqrt, 1), .5)
-        allclose(f(10, 2)(np.sqrt, 1), -.25)
+        approx(f(10, 1)(np.sqrt, 1), 0.5)
+        approx(f(10, 2)(np.sqrt, 1), -0.25)
 
 
 def test_estimation():
@@ -74,18 +80,29 @@ def test_order_monotonicity():
         err_ref = err
 
 
-def test_tiny():
-    # Check that `tiny` added in :meth:`.fdm.FDM.estimate` stabilises the
-    # numerics.
+def test_stability():
     assert central_fdm(2, 1, adapt=0)(lambda x: 0.0, 1.0) == 0.0
     assert central_fdm(2, 1, adapt=1, step_max=np.inf)(lambda x: x, 1.0) == 1.0
 
 
 def test_factor():
-    assert central_fdm(3, 1, factor=5).estimate().eps == \
-           5 * central_fdm(3, 1, factor=1).estimate().eps
+    assert (
+        central_fdm(3, 1, factor=5).estimate().eps
+        == 5 * central_fdm(3, 1, factor=1).estimate().eps
+    )
 
 
 def test_step_max():
     assert central_fdm(20, 1, step_max=np.inf).estimate().step > 0.1
     assert central_fdm(20, 1, step_max=0.1).estimate().step == 0.1
+
+
+def test_case_cosc():
+    def cosc(x):
+        if x == 0:
+            return 0.0
+        else:
+            return np.cos(np.pi * x) / x - np.sin(np.pi * x) / (np.pi * x ** 2)
+
+    approx(central_fdm(5, 1)(cosc, 0), -np.pi ** 2 / 3, atol=1e-9)
+    approx(central_fdm(10, 1, adapt=2)(cosc, 0), -np.pi ** 2 / 3, atol=5e-13)

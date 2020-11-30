@@ -2,28 +2,35 @@ import logging
 
 import numpy as np
 
-__all__ = ['FDM',
-           'forward_fdm',
-           'backward_fdm',
-           'central_fdm',
-           'default_condition']
+__all__ = ["FDM", "forward_fdm", "backward_fdm", "central_fdm", "default_condition"]
 log = logging.getLogger(__name__)
 
-default_condition = 100  #: Default condition number.
+default_condition = 100.0  #: Default condition number.
+
+
+def _estimate_magnitude(f, x):
+    f_x = np.max(np.abs(f(x)))
+    if f_x > 0:
+        # All is good.
+        return f_x
+    else:
+        # Ouch, `f(x) = 0`. The input `x` could be pathological for `f`. Perturb it a
+        # little and return that value instead.
+        x_perturbed = 0.1 * max(np.abs(x), 1)
+        return np.max(np.abs(f(x + x_perturbed)))
 
 
 def _default_bound_estimator(f, x, condition=default_condition):
     if f is None:
         # No function is given. Just assume a constant approximation of 1.
         return condition
-    return condition * np.max(np.abs(f(x)))
+    return condition * _estimate_magnitude(f, x)
 
 
 def _adaptive_bound_estimator(method, order, condition, adapt, **kw_args):
     if adapt >= 1:
         # Estimate the `order`th derivative of the function `f` at `x`.
-        estimate_derivative = \
-            method(order + 1, order, adapt - 1, condition, **kw_args)
+        estimate_derivative = method(order + 1, order, adapt - 1, condition, **kw_args)
 
         # Adaptive estimator:
         def estimator(f, x, condition_=condition):
@@ -31,7 +38,7 @@ def _adaptive_bound_estimator(method, order, condition, adapt, **kw_args):
             if f is None:
                 return _default_bound_estimator(f, x, condition_)
             else:
-                return np.max(np.abs(estimate_derivative(f, x)))
+                return _estimate_magnitude(lambda y: estimate_derivative(f, y), x)
 
     else:
         # Non-adaptive estimator:
@@ -85,12 +92,14 @@ class FDM:
             `bound` are inadequate.
     """
 
-    def __init__(self,
-                 grid,
-                 deriv,
-                 bound_estimator=_default_bound_estimator,
-                 factor=1,
-                 step_max=1):
+    def __init__(
+        self,
+        grid,
+        deriv,
+        bound_estimator=_default_bound_estimator,
+        factor=1,
+        step_max=1,
+    ):
         self.grid = np.array(grid)
         self.order = self.grid.shape[0]
         self.deriv = deriv
@@ -103,8 +112,10 @@ class FDM:
         self.step_max = step_max
 
         if self.order <= self.deriv:
-            raise ValueError('Order of the method must be strictly greater '
-                             'than that of the derivative.')
+            raise ValueError(
+                "Order of the method must be strictly greater "
+                "than that of the derivative."
+            )
 
         # Compute coefficients.
         C = np.stack([self.grid ** i for i in range(self.order)], axis=0)
@@ -124,31 +135,32 @@ class FDM:
         Returns:
             :class:`.fdm.FDM`: Returns itself.
         """
-        # Obtain a sample function value, defaulting to the constant function 1.
-        f_value = f(x) if f else np.float64(1)
+        tiny = 1e-40  #
 
-        # Get info and a tiny number to prevent divide-by-zero errors.
-        finfo = np.finfo(np.array(f_value).dtype)
-        tiny = 1e-20
-
-        # Estimate the bound and epsilon.
+        # Estimate the bound.
         self.bound = self.bound_estimator(f, x) + tiny
-        self.eps = finfo.eps * (np.max(np.abs(f_value)) + tiny) * self.factor
+
+        # Estimate the absolute error.
+        if f:
+            finfo = np.finfo(np.array(f(x)).dtype)
+            self.eps = (finfo.eps * _estimate_magnitude(f, x) + tiny) * self.factor
+        else:
+            self.eps = np.finfo(np.float64).eps * self.factor
 
         # Estimate step size.
         c1 = self.eps * np.sum(np.abs(self.coefs))
         c2 = self.bound
         c2 *= np.sum(np.abs(self.coefs * self.grid ** self.order))
         c2 /= np.math.factorial(self.order)
-        self.step = (self.deriv / (self.order - self.deriv) * c1 / c2) \
-                    ** (1. / self.order)
+        self.step = self.deriv / (self.order - self.deriv) * c1 / c2
+        self.step = self.step ** (1.0 / self.order)
 
         # Cap the step size.
         self.step = min(self.step, self.step_max)
 
         # Estimate accuracy.
-        self.acc = c1 * self.step ** (-self.deriv) + \
-                   c2 * self.step ** (self.order - self.deriv)
+        self.acc = c1 * self.step ** (-self.deriv)
+        self.acc += c2 * self.step ** (self.order - self.deriv)
 
         return self
 
@@ -164,8 +176,7 @@ class FDM:
             self.acc = None
 
         # Execute finite difference estimate.
-        ws = [c * f(x + self.step * loc)
-              for c, loc in zip(self.coefs, self.grid)]
+        ws = [c * f(x + self.step * loc) for c, loc in zip(self.coefs, self.grid)]
         return np.sum(ws, axis=0) / self.step ** self.deriv
 
 
@@ -186,12 +197,14 @@ def forward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
     """
-    return FDM(np.arange(order),
-               deriv,
-               bound_estimator=_adaptive_bound_estimator(
-                   forward_fdm, order, condition, adapt, **kw_args
-               ),
-               **kw_args)
+    return FDM(
+        np.arange(order),
+        deriv,
+        bound_estimator=_adaptive_bound_estimator(
+            forward_fdm, order, condition, adapt, **kw_args
+        ),
+        **kw_args
+    )
 
 
 def backward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
@@ -211,12 +224,14 @@ def backward_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
     """
-    return FDM(-np.arange(order)[::-1],
-               deriv,
-               bound_estimator=_adaptive_bound_estimator(
-                   backward_fdm, order, condition, adapt, **kw_args
-               ),
-               **kw_args)
+    return FDM(
+        -np.arange(order)[::-1],
+        deriv,
+        bound_estimator=_adaptive_bound_estimator(
+            backward_fdm, order, condition, adapt, **kw_args
+        ),
+        **kw_args
+    )
 
 
 def central_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
@@ -236,9 +251,11 @@ def central_fdm(order, deriv, adapt=1, condition=default_condition, **kw_args):
     Returns:
         :class:`.fdm.FDM`: The desired finite difference method.
     """
-    return FDM(np.linspace(-1, 1, order),
-               deriv,
-               bound_estimator=_adaptive_bound_estimator(
-                   central_fdm, order, condition, adapt, **kw_args
-               ),
-               **kw_args)
+    return FDM(
+        np.linspace(-1, 1, order),
+        deriv,
+        bound_estimator=_adaptive_bound_estimator(
+            central_fdm, order, condition, adapt, **kw_args
+        ),
+        **kw_args
+    )
