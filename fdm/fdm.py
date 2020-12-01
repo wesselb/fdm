@@ -8,15 +8,24 @@ log = logging.getLogger(__name__)
 default_condition = 100.0  #: Default condition number.
 
 
+def _ensure_float(x):
+    if np.issubdtype(np.array(x).dtype, np.floating):
+        return x
+    else:
+        return float(x)
+
+
 def _estimate_magnitude(f, x):
+    x = _ensure_float(x)
     f_x = np.max(np.abs(f(x)))
     if f_x > 0:
         # All is good.
         return f_x
     else:
         # Ouch, `f(x) = 0`. The input `x` could be pathological for `f`. Perturb it a
-        # little and return that value instead.
-        x_perturbed = 0.1 * max(np.abs(x), 1)
+        # little and return that value instead. Ensure that the result is of the right
+        # data type.
+        x_perturbed = np.array(0.1 * max(np.abs(x), 1)).astype(np.array(x).dtype)
         return np.max(np.abs(f(x + x_perturbed)))
 
 
@@ -135,16 +144,25 @@ class FDM:
         Returns:
             :class:`.fdm.FDM`: Returns itself.
         """
-        tiny = 1e-40  #
+        x = _ensure_float(x)
 
-        # Estimate the bound.
-        self.bound = self.bound_estimator(f, x) + tiny
+        # Estimate the bound. Ensure that it is not zero. It can be small.
+        self.bound = max(self.bound_estimator(f, x), 1e-40)
 
         # Estimate the absolute error.
         if f:
-            finfo = np.finfo(np.array(f(x)).dtype)
-            self.eps = (finfo.eps * _estimate_magnitude(f, x) + tiny) * self.factor
+            # We cannot take `eps(f(x))` if `f` is zero around `x`. Therefore, we assume
+            # a lower bound that gives `f` four orders of magnitude wiggle room.
+            lower = np.finfo(np.array(x).dtype).eps / 1000
+            self.eps = (
+                max(
+                    np.finfo(np.array(f(x)).dtype).eps * _estimate_magnitude(f, x),
+                    lower,
+                )
+                * self.factor
+            )
         else:
+            # Just assume that `x = 1.0`.
             self.eps = np.finfo(np.float64).eps * self.factor
 
         # Estimate step size.
