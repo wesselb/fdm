@@ -14,10 +14,10 @@ __all__ = [
 ]
 log = logging.getLogger(__name__)
 
-default_adaptive_method = central_fdm(order=5, deriv=1, adapt=1)
+default_adaptive_method = central_fdm(order=6, deriv=1, adapt=1)
 """:class:`.fdm.FDM`: Default adaptive method."""
 
-default_robust_method = central_fdm(order=5, deriv=1, adapt=0, condition=1e4)
+default_robust_method = central_fdm(order=6, deriv=1, adapt=0, condition=1e4)
 """:class:`.fdm.FDM`: Default robust method."""
 
 
@@ -47,7 +47,8 @@ def gradient(f, method=default_adaptive_method):
     """
 
     def compute_gradient(x):
-        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
+        # Query the object once to get the data type.
+        dtype = np.array(f(x), copy=False).dtype
 
         # Handle edge case where `x` is a scalar.
         if np.shape(x) == ():
@@ -92,7 +93,8 @@ def jvp(f, v, method=default_adaptive_method):
     """
 
     def compute_jvp(x):
-        dtype = np.array(f(x)).dtype  # Query the object once to get the dtype.
+        # Query the object once to get the data type.
+        dtype = np.array(f(x), copy=False).dtype
         zero = np.array(0).astype(dtype)
         return method(lambda eps: f(x + eps * v), zero)
 
@@ -114,8 +116,8 @@ def jacobian(f, method=default_adaptive_method):
     def compute_jacobian(x):
         size_in = np.size(x)  # Size of input.
 
-        # Query the object once to get the dtype and output size.
-        fx = np.array(f(x))
+        # Query the object once to get the data type and output size.
+        fx = np.array(f(x), copy=False)
         dtype = fx.dtype
         size_out = fx.size
 
