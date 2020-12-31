@@ -143,7 +143,7 @@ class FDM:
             f_error = f_magnitude * _eps(f_magnitude)
 
             # Adaptation requires that `f_error > 0` and `df_magnitude > 0`. If those
-            # conditions are not satisfied, default to the default step estimator.
+            # conditions are not satisfied, then default to the default step estimator.
             if f_error == 0 or df_magnitude == 0:
                 self._estimate_default(x, max_range)
             else:
@@ -214,7 +214,7 @@ class FDM:
             self.step = step
             self.acc = None
 
-        # Perform setup for finite difference estimate..
+        # Perform setup for finite difference estimate.
         fs = [f(x + g * self.step) for g in self.grid]
 
         def _execute(coefs):
