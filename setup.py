@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-requirements = ["numpy>=1.16"]
+requirements = ["numpy>=1.16", "sympy"]
 
 setup(
     packages=find_packages(exclude=["docs"]),
