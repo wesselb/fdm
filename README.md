@@ -137,7 +137,7 @@ second-order method, where we know that `np.sin` is well conditioned.
 
 ```python
 >>> central_fdm(order=2, deriv=1, condition=1)(np.sin, 1) - np.cos(1)  
-4.307577627926662e-10
+-3.2093916413344914e-10
 ```
 
 And let's try to estimate the second derivative of `np.sin` at `1` with a 
@@ -145,7 +145,7 @@ third-order method.
 
 ```python
 >>> central_fdm(order=3, deriv=2, condition=1)(np.sin, 1) + np.sin(1)  
--1.263876664436836e-07
+-2.4126405273605656e-07
 ```
 
 Hm.
@@ -163,7 +163,7 @@ fifth-order method.
 
 ```python
 >>> central_fdm(order=5, deriv=2, condition=1).estimate().acc
-7.343652562575155e-10
+7.343652562575157e-10
 ```
 
 And let's estimate the second derivative of `np.sin` at `1` with a 
@@ -171,25 +171,29 @@ fifth-order method.
 
 ```python
 >>> central_fdm(order=5, deriv=2, condition=1)(np.sin, 1) + np.sin(1)   
--9.145184609593571e-11
+-9.530454203598993e-11
 ```
 
 Hooray!
 
-Finally, let us verify that increasing the order indeed reliably increases 
-the accuracy.
+Finally, let us verify that increasing the order generally increases the accuracy.
 
 ```python
->>> for i in range(3, 11):
+>>> for i in range(3, 16):
 ...      print(central_fdm(order=i, deriv=2, condition=1)(np.sin, 1) + np.sin(1))
--1.263876664436836e-07
-6.341286606925678e-09
--9.145184609593571e-11
-2.7335911312320604e-12
-6.588063428125679e-13
-2.142730437526552e-13
-2.057243264630415e-13
-8.570921750106208e-14
+-2.4126405273605656e-07
+1.0358558566458953e-08
+-9.530454203598993e-11
+1.8791523892502937e-11
+-1.1972645097557688e-12
+-7.390754674929667e-13
+2.3780977187470853e-13
+1.127986593019159e-13
+-7.760458942129844e-14
+1.092459456231154e-13
+-1.687538997430238e-14
+9.43689570931383e-15
+2.886579864025407e-15
 ```
 
 ## Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework
