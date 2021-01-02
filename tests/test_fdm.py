@@ -170,7 +170,7 @@ def cosc(x):
         (np.cos, 0, 0, 1),
         (np.exp, 0, 1, 1),
         (np.sinc, 0, 0, 1),
-        (cosc, 0, -np.pi ** 2 / 3, 100),
+        (cosc, 0, -np.pi ** 2 / 3, 200),
     ],
 )
 @pytest.mark.parametrize(
