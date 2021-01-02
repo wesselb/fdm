@@ -67,7 +67,7 @@ class FDM:
         bound_estimator (:class:`.fdm.FDM`, optional): A finite difference method that
             is tuned to perform adaptation for this method.
         condition (float, optional): Amplification of the infinity norm when passed
-            to the function's derivatives. Defaults to `100.0`.
+            to the function's derivatives. Defaults to `10.0`.
         factor (float, optional): Amplification of the round-off error on the function's
             evaluations. Defaults to `1.0`.
 
@@ -96,7 +96,7 @@ class FDM:
         grid,
         deriv=1,
         bound_estimator=None,
-        condition=100.0,
+        condition=10.0,
         factor=1.0,
     ):
         self.grid = np.array(grid)
@@ -225,10 +225,11 @@ class FDM:
             # Estimate magnitude of function in neighbourhood.
             magnitude_f = np.max(np.abs(fs))
 
-            # Estimate magnitude of derivative in neighbourhood.
+            # Estimate magnitude of derivative in neighbourhood by estimating the
+            # derivative at the three closest grid points.
             estimates = []
-            for offset in -self.grid:
-                coefs, _, _ = _compute_coefs_mults(self.grid + offset, self.deriv)
+            for g in sorted(self.grid, key=lambda x: abs(x))[:3]:
+                coefs, _, _ = _compute_coefs_mults(self.grid - g, self.deriv)
                 estimates.append(np.abs(_execute(coefs)))
             magnitude_df = np.max(estimates)
 

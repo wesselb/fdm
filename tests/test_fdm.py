@@ -50,10 +50,10 @@ def test_adaptation():
         return -1 / x ** 2
 
     err1 = np.abs(forward_fdm(3, 1, adapt=0)(f, 1e-3) - df(1e-3))
-    err2 = np.abs(forward_fdm(3, 1, adapt=1)(f, 1e-3) - df(1e-3))
+    err2 = np.abs(forward_fdm(3, 1, adapt=2)(f, 1e-3) - df(1e-3))
 
     # Check that adaptation helped.
-    assert err2 <= 1e-2 * err1
+    assert err2 <= 0.01 * err1
 
     # Check that adaptation gets it right.
     assert err2 <= 1e-4
@@ -62,8 +62,8 @@ def test_adaptation():
 def test_order_monotonicity():
     err_ref = 1e-4
 
-    for i in range(3, 8):
-        method = central_fdm(i, 2, condition=1, adapt=1)
+    for i in range(3, 10):
+        method = central_fdm(i, 2, adapt=1)
 
         # Check order of method.
         assert method.order == i
@@ -78,7 +78,7 @@ def test_order_monotonicity():
 
 def test_default_step():
     approx(
-        central_fdm(2, 1).estimate().step, np.sqrt(2 * np.finfo(np.float64).eps / 100)
+        central_fdm(2, 1).estimate().step, np.sqrt(2 * np.finfo(np.float64).eps / 10)
     )
 
 

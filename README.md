@@ -133,36 +133,36 @@ array([0.65897811, 5.37386023, 3.77301973])
 ```
 
 Let's try to estimate the first derivative of `np.sin` at `1` with a 
-second-order method, where we know that `np.sin` is well conditioned.
+second-order method.
 
 ```python
->>> central_fdm(order=2, deriv=1, condition=1)(np.sin, 1) - np.cos(1)  
--3.2093916413344914e-10
+>>> central_fdm(order=2, deriv=1)(np.sin, 1) - np.cos(1)
+-1.2914319613699377e-09
 ```
 
 And let's try to estimate the second derivative of `np.sin` at `1` with a 
 third-order method.
 
 ```python
->>> central_fdm(order=3, deriv=2, condition=1)(np.sin, 1) + np.sin(1)  
--2.4126405273605656e-07
+>>> central_fdm(order=3, deriv=2)(np.sin, 1) + np.sin(1)  
+1.6342919018086377e-08
 ```
 
 Hm.
 Let's check the accuracy of this third-order method.
 The step size and accuracy of the method are computed upon calling
-`FDM.estimate()`.
+`FDM.estimate`.
 
 ```python
->>> central_fdm(order=3, deriv=2, condition=1).estimate().acc
-8.733476581980376e-06
+>>> central_fdm(order=3, deriv=2).estimate(np.sin, 1).acc
+5.476137293912896e-06
 ```
 
 We might want a little more accuracy. Let's check the accuracy of a 
 fifth-order method.
 
 ```python
->>> central_fdm(order=5, deriv=2, condition=1).estimate().acc
+>>> central_fdm(order=5, deriv=2).estimate(np.sin, 1).acc
 7.343652562575157e-10
 ```
 
@@ -170,8 +170,8 @@ And let's estimate the second derivative of `np.sin` at `1` with a
 fifth-order method.
 
 ```python
->>> central_fdm(order=5, deriv=2, condition=1)(np.sin, 1) + np.sin(1)   
--9.530454203598993e-11
+>>> central_fdm(order=5, deriv=2)(np.sin, 1) + np.sin(1)   
+-1.7121615236703747e-10
 ```
 
 Hooray!
@@ -179,21 +179,15 @@ Hooray!
 Finally, let us verify that increasing the order generally increases the accuracy.
 
 ```python
->>> for i in range(3, 16):
-...      print(central_fdm(order=i, deriv=2, condition=1)(np.sin, 1) + np.sin(1))
--2.4126405273605656e-07
-1.0358558566458953e-08
--9.530454203598993e-11
-1.8791523892502937e-11
--1.1972645097557688e-12
--7.390754674929667e-13
-2.3780977187470853e-13
-1.127986593019159e-13
--7.760458942129844e-14
-1.092459456231154e-13
--1.687538997430238e-14
-9.43689570931383e-15
-2.886579864025407e-15
+>>> for i in range(3, 10):
+...      print(central_fdm(order=i, deriv=2)(np.sin, 1) + np.sin(1))
+1.6342919018086377e-08
+8.604865264771888e-09
+-1.7121615236703747e-10
+8.558931341440257e-12
+-2.147615418834903e-12
+6.80566714095221e-13
+-1.2434497875801753e-14
 ```
 
 ## Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework
