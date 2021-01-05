@@ -26,7 +26,7 @@ def cosc(x):
     if x == 0:
         return 0.0
     else:
-        # This gives cancellation errors! Not sure how to improve...
+        # Does this give cancellation errors?
         return (np.cos(np.pi * x) - np.sinc(x)) / x
 
 
@@ -42,8 +42,8 @@ def cosc(x):
         (np.sin, 1, np.cos(1), 5e-13, 5e-14),
         (np.cos, 1, -np.sin(1), 7.5e-13, 5e-14),
         (np.sinc, 0, 0, 5e-12, 5e-14),
-        # Can't do better on `cosc` due to cancellation errors of `cosc`...
-        (cosc, 0, -np.pi ** 2 / 3, 5e-10, 5e-10),
+        # `cosc` is hard.
+        (cosc, 0, -np.pi ** 2 / 3, 5e-10, 5e-11),
     ],
 )
 @pytest.mark.parametrize(
@@ -58,8 +58,10 @@ def test_accuracy(f, x, df, atol, atol_central, constructor, is_central):
     if is_central:
         approx(constructor(6, 1)(f, x), df, atol=atol_central, rtol=0)
         approx(constructor(7, 1)(f, x), df, atol=atol_central, rtol=0)
-        if f != cosc:
-            # Again, need to exclude `cosc`.
+        if f == cosc:
+            # `cosc` is hard.
+            approx(constructor(14, 1)(f, x), df, atol=1e-13, rtol=0)
+        else:
             approx(constructor(14, 1)(f, x), df, atol=5e-15, rtol=0)
     else:
         approx(constructor(6, 1)(f, x), df, atol=atol, rtol=0)
