@@ -22,6 +22,50 @@ def test_correctness(f):
     approx(f(10, 2)(np.sqrt, 1), -1 / 4)
 
 
+def cosc(x):
+    if x == 0:
+        return 0.0
+    else:
+        # This gives cancellation errors! Not sure how to improve...
+        return (np.cos(np.pi * x) - np.sinc(x)) / x
+
+
+@pytest.mark.parametrize(
+    "f,x,df,atol,atol_central",
+    [
+        (lambda x: 0, 0, 0, 0, 0),
+        (lambda x: x, 0, 1, 5e-15, 5e-16),
+        (np.exp, 0, 1, 7.5e-13, 5e-14),
+        (np.sin, 0, 1, 1e-14, 5e-16),
+        (np.cos, 0, 0, 5e-13, 5e-14),
+        (np.exp, 1, np.exp(1), 5e-12, 5e-13),
+        (np.sin, 1, np.cos(1), 5e-13, 5e-14),
+        (np.cos, 1, -np.sin(1), 7.5e-13, 5e-14),
+        (np.sinc, 0, 0, 5e-12, 5e-14),
+        # Can't do better on `cosc` due to cancellation errors of `cosc`...
+        (cosc, 0, -np.pi ** 2 / 3, 5e-10, 5e-10),
+    ],
+)
+@pytest.mark.parametrize(
+    "constructor,is_central",
+    [
+        (central_fdm, True),
+        (forward_fdm, False),
+        (backward_fdm, False),
+    ],
+)
+def test_accuracy(f, x, df, atol, atol_central, constructor, is_central):
+    if is_central:
+        approx(constructor(6, 1)(f, x), df, atol=atol_central, rtol=0)
+        approx(constructor(7, 1)(f, x), df, atol=atol_central, rtol=0)
+        if f != cosc:
+            # Again, need to exclude `cosc`.
+            approx(constructor(14, 1)(f, x), df, atol=5e-15, rtol=0)
+    else:
+        approx(constructor(6, 1)(f, x), df, atol=atol, rtol=0)
+        approx(constructor(7, 1)(f, x), df, atol=atol, rtol=0)
+
+
 def test_estimation():
     m = central_fdm(2, 1)
 
@@ -155,34 +199,3 @@ def test_range_max(factor):
     central_fdm(8, 1, adapt=2)(f, 1, max_range=true_range / factor)
     approx(f.true_range(1), true_range / factor)
 
-
-def cosc(x):
-    if x == 0:
-        return 0.0
-    else:
-        return np.cos(np.pi * x) / x - np.sin(np.pi * x) / (np.pi * x ** 2)
-
-
-@pytest.mark.parametrize(
-    "f,x,df,factor",
-    [
-        (np.sin, 0, 1, 1),
-        (np.cos, 0, 0, 1),
-        (np.exp, 0, 1, 1),
-        (np.sinc, 0, 0, 1),
-        (cosc, 0, -np.pi ** 2 / 3, 200),
-    ],
-)
-@pytest.mark.parametrize(
-    "constructor",
-    [
-        central_fdm,
-        forward_fdm,
-        backward_fdm,
-    ],
-)
-def test_accuracy(f, x, df, factor, constructor):
-    approx(constructor(4, 1)(f, x), df, atol=1e-8 * factor, rtol=0)
-    approx(constructor(5, 1)(f, x), df, atol=1e-8 * factor, rtol=0)
-    approx(constructor(8, 1)(f, x), df, atol=1e-12 * factor, rtol=0)
-    approx(constructor(9, 1)(f, x), df, atol=1e-12 * factor, rtol=0)
