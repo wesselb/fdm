@@ -39,16 +39,16 @@ def _compute_coefs_mults(grid, deriv):
 
         # Compute parts of the FDM.
         coefs = np.array([float(c) for c in coefs])
-        bound_mult = float(
+        df_magnitude_mult = float(
             sum([abs(c * g ** order) for c, g in zip(coefs, grid)])
             / np.math.factorial(order)
         )
-        err_mult = float(sum([abs(c) for c in coefs]))
+        f_error_mult = float(sum([abs(c) for c in coefs]))
 
         # Save result.
-        _cache[cache_key] = coefs, bound_mult, err_mult
+        _cache[cache_key] = coefs, df_magnitude_mult, f_error_mult
 
-        return coefs, bound_mult, err_mult
+        return coefs, df_magnitude_mult, f_error_mult
 
 
 class FDM:
@@ -147,13 +147,13 @@ class FDM:
             if f_error == 0 or df_magnitude == 0:
                 self._estimate_default(x, max_range)
             else:
-                self._estimate_adapt(x, f_error, df_magnitude, max_range)
+                self._estimate_adapt(x, df_magnitude, f_error, max_range)
         else:
             self._estimate_default(x, max_range)
 
         return self
 
-    def _compute_step_acc(self, f_error, df_magnitude):
+    def _compute_step_acc(self, df_magnitude, f_error):
         c1 = f_error * self.f_error_mult * self.factor
         c2 = df_magnitude * self.df_magnitude_mult
         step = self.deriv / (self.order - self.deriv) * (c1 / c2)
@@ -162,15 +162,15 @@ class FDM:
         return step, acc
 
     def _compute_default(self, x):
-        step, acc = self._compute_step_acc(_eps(x), self.condition)
+        step, acc = self._compute_step_acc(self.condition, _eps(x))
         return step, acc
 
     def _estimate_default(self, x, max_range):
         self.step, self.acc = self._compute_default(x)
         self._limit_step(x, max_range)
 
-    def _estimate_adapt(self, x, f_error, df_magnitude, max_range):
-        self.step, self.acc = self._compute_step_acc(f_error, df_magnitude)
+    def _estimate_adapt(self, x, df_magnitude, f_error, max_range):
+        self.step, self.acc = self._compute_step_acc(df_magnitude, f_error)
         self._limit_step(x, max_range)
 
     def _limit_step(self, x, max_range):
@@ -179,12 +179,12 @@ class FDM:
             if self.step > step_max:
                 self.step = step_max
                 self.acc = None
-        else:
-            step_default, _ = self._compute_default(x)
-            step_max_default = 1000 * step_default
-            if self.step > step_max_default:
-                self.step = step_max_default
-                self.acc = None
+
+        step_default, _ = self._compute_default(x)
+        step_max_default = 1000 * step_default
+        if self.step > step_max_default:
+            self.step = step_max_default
+            self.acc = None
 
     def __call__(self, f, x=0, step=None, magnitude=False, max_range=None):
         """Execute the finite difference method.
@@ -225,11 +225,16 @@ class FDM:
             # Estimate magnitude of function in neighbourhood.
             magnitude_f = np.max(np.abs(fs))
 
-            # Estimate magnitude of derivative in neighbourhood by estimating the
-            # derivative at the three closest grid points.
+            # Estimate magnitude of derivative in neighbourhood.
+            if all(self.grid >= 0):
+                offsets = [-2, -1, 0]
+            elif all(self.grid <= 0):
+                offsets = [0, 1, 2]
+            else:
+                offsets = [-1, 0, 1]
             estimates = []
-            for g in sorted(self.grid, key=lambda x: abs(x))[:3]:
-                coefs, _, _ = _compute_coefs_mults(self.grid - g, self.deriv)
+            for offset in offsets:
+                coefs, _, _ = _compute_coefs_mults(self.grid - offset, self.deriv)
                 estimates.append(np.abs(_execute(coefs)))
             magnitude_df = np.max(estimates)
 
