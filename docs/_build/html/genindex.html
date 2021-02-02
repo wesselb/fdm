@@ -1,9 +1,7 @@
 
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -13,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> fdm
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fdm
           
 
           
@@ -76,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -91,6 +92,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -129,7 +131,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Index</li>
     
@@ -161,6 +163,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#J"><strong>J</strong></a>
+ | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#S"><strong>S</strong></a>
  
@@ -184,7 +187,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.bound">bound (fdm.fdm.FDM attribute)</a>
+      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.bound_estimator">bound_estimator (fdm.fdm.FDM attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -194,11 +197,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.fdm.html#fdm.fdm.central_fdm">central_fdm() (in module fdm.fdm)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.numerics.html#fdm.numerics.check_sensitivity">check_sensitivity() (in module fdm.numerics)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.coefs">coefs (fdm.fdm.FDM attribute)</a>
+</li>
+      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.condition">condition (fdm.fdm.FDM attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -208,23 +213,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.multivariate.html#fdm.multivariate.default_adaptive_method">default_adaptive_method (in module fdm.multivariate)</a>
 </li>
-      <li><a href="source/fdm.fdm.html#fdm.fdm.default_condition">default_condition (in module fdm.fdm)</a>
+      <li><a href="source/fdm.multivariate.html#fdm.multivariate.default_robust_method">default_robust_method (in module fdm.multivariate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/fdm.multivariate.html#fdm.multivariate.default_robust_method">default_robust_method (in module fdm.multivariate)</a>
-</li>
       <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.deriv">deriv (fdm.fdm.FDM attribute)</a>
+</li>
+      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.df_magnitude_mult">df_magnitude_mult (fdm.fdm.FDM attribute)</a>
 </li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.eps">eps (fdm.fdm.FDM attribute)</a>
-</li>
-  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.estimate">estimate() (fdm.fdm.FDM method)</a>
 </li>
@@ -234,18 +235,42 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.f_error_mult">f_error_mult (fdm.fdm.FDM attribute)</a>
+</li>
+      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.factor">factor (fdm.fdm.FDM attribute)</a>
+</li>
+      <li>
+    fdm
+
+      <ul>
+        <li><a href="api.html#module-fdm">module</a>
+</li>
+      </ul></li>
       <li><a href="source/fdm.fdm.html#fdm.fdm.FDM">FDM (class in fdm.fdm)</a>
 </li>
-      <li><a href="api.html#module-fdm">fdm (module)</a>
+      <li>
+    fdm.fdm
+
+      <ul>
+        <li><a href="source/fdm.fdm.html#module-fdm.fdm">module</a>
 </li>
-      <li><a href="source/fdm.fdm.html#module-fdm.fdm">fdm.fdm (module)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/fdm.multivariate.html#module-fdm.multivariate">fdm.multivariate (module)</a>
+      <li>
+    fdm.multivariate
+
+      <ul>
+        <li><a href="source/fdm.multivariate.html#module-fdm.multivariate">module</a>
 </li>
-      <li><a href="source/fdm.numerics.html#module-fdm.numerics">fdm.numerics (module)</a>
+      </ul></li>
+      <li>
+    fdm.numerics
+
+      <ul>
+        <li><a href="source/fdm.numerics.html#module-fdm.numerics">module</a>
 </li>
+      </ul></li>
       <li><a href="source/fdm.fdm.html#fdm.fdm.forward_fdm">forward_fdm() (in module fdm.fdm)</a>
 </li>
   </ul></td>
@@ -283,6 +308,25 @@
   </ul></td>
 </tr></table>
 
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api.html#module-fdm">fdm</a>
+</li>
+        <li><a href="source/fdm.fdm.html#module-fdm.fdm">fdm.fdm</a>
+</li>
+        <li><a href="source/fdm.multivariate.html#module-fdm.multivariate">fdm.multivariate</a>
+</li>
+        <li><a href="source/fdm.numerics.html#module-fdm.numerics">fdm.numerics</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -295,10 +339,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.step">step (fdm.fdm.FDM attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/fdm.fdm.html#fdm.fdm.FDM.step_max">step_max (fdm.fdm.FDM attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -315,11 +355,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -330,7 +378,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

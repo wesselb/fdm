@@ -1,13 +1,10 @@
 `FDM: Finite Difference Methods <http://github.com/wesselb/fdm>`__
 ==================================================================
 
-|Build| |Coverage Status| |Latest Docs|
+|CI| |Coverage Status| |Latest Docs| |Code style: black|
 
-FDM estimates derivatives with finite differences.
-
-See also `FDM.jl <https://github.com/invenia/FDM.jl>`__.
-
-See the `docs <https://wesselb.github.io/fdm>`__.
+FDM estimates derivatives with finite differences. See also
+`FiniteDifferences.jl <https://github.com/JuliaDiff/FiniteDifferences.jl>`__.
 
 -  `Installation <#installation>`__
 -  `Multivariate Derivatives <#multivariate-derivatives>`__
@@ -25,15 +22,11 @@ See the `docs <https://wesselb.github.io/fdm>`__.
 Installation
 ------------
 
-The package is tested for Python 2.7 and Python 3.6, which are the
-versions recommended to use. To install the package, use the following
-sequence of commands:
+FDM requires Python 3.6 or higher.
 
-::
+.. code:: bash
 
-    git clone https://github.com/wesselb/fdm
-    cd fdm
-    make install
+    pip install fdm
 
 Multivariate Derivatives
 ------------------------
@@ -151,62 +144,61 @@ Scalar Derivatives
     >>> from fdm import central_fdm
 
 Let's try to estimate the first derivative of ``np.sin`` at ``1`` with a
-second-order method, where we know that ``np.sin`` is well conditioned.
+second-order method.
 
 .. code:: python
 
-    >>> central_fdm(order=2, deriv=1, condition=1)(np.sin, 1) - np.cos(1)  
-    4.307577627926662e-10
+    >>> central_fdm(order=2, deriv=1)(np.sin, 1) - np.cos(1)
+    -1.2914319613699377e-09
 
 And let's try to estimate the second derivative of ``np.sin`` at ``1``
 with a third-order method.
 
 .. code:: python
 
-    >>> central_fdm(order=3, deriv=2, condition=1)(np.sin, 1) + np.sin(1)  
-    -1.263876664436836e-07
+    >>> central_fdm(order=3, deriv=2)(np.sin, 1) + np.sin(1)  
+    1.6342919018086377e-08
 
 Hm. Let's check the accuracy of this third-order method. The step size
-and accuracy of the method are computed upon calling ``FDM.estimate()``.
+and accuracy of the method are computed upon calling ``FDM.estimate``.
 
 .. code:: python
 
-    >>> central_fdm(order=3, deriv=2, condition=1).estimate().acc
-    8.733476581980376e-06
+    >>> central_fdm(order=3, deriv=2).estimate(np.sin, 1).acc
+    5.476137293912896e-06
 
 We might want a little more accuracy. Let's check the accuracy of a
 fifth-order method.
 
 .. code:: python
 
-    >>> central_fdm(order=5, deriv=2, condition=1).estimate().acc
-    7.343652562575155e-10
+    >>> central_fdm(order=5, deriv=2).estimate(np.sin, 1).acc
+    7.343652562575157e-10
 
 And let's estimate the second derivative of ``np.sin`` at ``1`` with a
 fifth-order method.
 
 .. code:: python
 
-    >>> central_fdm(order=5, deriv=2, condition=1)(np.sin, 1) + np.sin(1)   
-    -9.145184609593571e-11
+    >>> central_fdm(order=5, deriv=2)(np.sin, 1) + np.sin(1)   
+    -1.7121615236703747e-10
 
 Hooray!
 
-Finally, let us verify that increasing the order indeed reliably
-increases the accuracy.
+Finally, let us verify that increasing the order generally increases the
+accuracy.
 
 .. code:: python
 
-    >>> for i in range(3, 11):
-    ...      print(central_fdm(order=i, deriv=2, condition=1)(np.sin, 1) + np.sin(1))
-    -1.263876664436836e-07
-    6.341286606925678e-09
-    -9.145184609593571e-11
-    2.7335911312320604e-12
-    6.588063428125679e-13
-    2.142730437526552e-13
-    2.057243264630415e-13
-    8.570921750106208e-14
+    >>> for i in range(3, 10):
+    ...      print(central_fdm(order=i, deriv=2)(np.sin, 1) + np.sin(1))
+    1.6342919018086377e-08
+    8.604865264771888e-09
+    -1.7121615236703747e-10
+    8.558931341440257e-12
+    -2.147615418834903e-12
+    6.80566714095221e-13
+    -1.2434497875801753e-14
 
 Testing Sensitivities in a Reverse-Mode Automatic Differentation Framework
 --------------------------------------------------------------------------
@@ -251,9 +243,11 @@ Then ``check_sensitivity`` should throw an ``AssertionError``:
     >>> check_sensitivity(mul, s_mul, (2, 3)) 
     AssertionError: Sensitivity of argument 2 of function "mul" did not match numerical estimate.
 
-.. |Build| image:: https://travis-ci.org/wesselb/fdm.svg?branch=master
-   :target: https://travis-ci.org/wesselb/fdm
+.. |CI| image:: https://github.com/wesselb/fdm/workflows/CI/badge.svg?branch=master
+   :target: https://github.com/wesselb/fdm/actions?query=workflow%3ACI
 .. |Coverage Status| image:: https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/wesselb/fdm?branch=master
 .. |Latest Docs| image:: https://img.shields.io/badge/docs-latest-blue.svg
    :target: https://wesselb.github.io/fdm
+.. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black

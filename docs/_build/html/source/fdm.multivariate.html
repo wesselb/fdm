@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="fdm.numerics module" href="fdm.numerics.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> fdm
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> fdm
           
 
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -97,6 +99,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -135,7 +138,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">Application Programming Interface</a> &raquo;</li>
         
@@ -160,10 +163,32 @@
             
   <div class="section" id="module-fdm.multivariate">
 <span id="fdm-multivariate-module"></span><h1>fdm.multivariate module<a class="headerlink" href="#module-fdm.multivariate" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py data">
+<dt id="fdm.multivariate.default_adaptive_method">
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">default_adaptive_method</code><em class="property"> = &lt;fdm.fdm.FDM object&gt;</em><a class="headerlink" href="#fdm.multivariate.default_adaptive_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default adaptive method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="fdm.multivariate.default_robust_method">
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">default_robust_method</code><em class="property"> = &lt;fdm.fdm.FDM object&gt;</em><a class="headerlink" href="#fdm.multivariate.default_robust_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default robust method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="fdm.multivariate.gradient">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">gradient</code><span class="sig-paren">(</span><em>f</em>, <em>method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.gradient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the gradient of a <cite>f</cite>.</p>
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">gradient</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the gradient of <cite>f</cite>.</p>
 <p>The function <cite>f</cite> should be scalar valued.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -183,58 +208,9 @@ Defaults to <a class="reference internal" href="#fdm.multivariate.default_adapti
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="fdm.multivariate.jvp">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">jvp</code><span class="sig-paren">(</span><em>f</em>, <em>v</em>, <em>method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#jvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.jvp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a Jacobian-vector product, also known as a directional
-derivative.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>f</strong> (<em>function</em>) – Function to compute Jacobian of.</p></li>
-<li><p><strong>v</strong> (<em>tensor</em>) – Vector to multiply Jacobian with. Should be of the same form
-as the arguments supplied to <cite>f</cite>.</p></li>
-<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
-Defaults to <a class="reference internal" href="#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Jacobian of <cite>f</cite> multiplied by <cite>v</cite>, or directional</dt><dd><p>derivative in the direction <cite>v</cite>.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>function</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="fdm.multivariate.jacobian">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">jacobian</code><span class="sig-paren">(</span><em>f</em>, <em>method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#jacobian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.jacobian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the Jacobian of <cite>f</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>f</strong> (<em>function</em>) – Function to compute Jacobian of.</p></li>
-<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
-Defaults to <a class="reference internal" href="#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Jacobian.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>function</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="fdm.multivariate.hvp">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">hvp</code><span class="sig-paren">(</span><em>f</em>, <em>v</em>, <em>jac_method=&lt;fdm.fdm.FDM object&gt;</em>, <em>dir_method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#hvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.hvp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">hvp</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">v</em>, <em class="sig-param">jac_method=&lt;fdm.fdm.FDM object&gt;</em>, <em class="sig-param">dir_method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#hvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.hvp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute a Hessian-vector product.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -259,24 +235,51 @@ use for directional derivative computation. Defaults to
 </dl>
 </dd></dl>
 
-<dl class="data">
-<dt id="fdm.multivariate.default_adaptive_method">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">default_adaptive_method</code><em class="property"> = &lt;fdm.fdm.FDM object&gt;</em><a class="headerlink" href="#fdm.multivariate.default_adaptive_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default adaptive method.</p>
+<dl class="py function">
+<dt id="fdm.multivariate.jacobian">
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">jacobian</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#jacobian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.jacobian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Jacobian of <cite>f</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>function</em>) – Function to compute Jacobian of.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
+Defaults to <a class="reference internal" href="#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="data">
-<dt id="fdm.multivariate.default_robust_method">
-<code class="descclassname">fdm.multivariate.</code><code class="descname">default_robust_method</code><em class="property"> = &lt;fdm.fdm.FDM object&gt;</em><a class="headerlink" href="#fdm.multivariate.default_robust_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default robust method.</p>
+<dl class="py function">
+<dt id="fdm.multivariate.jvp">
+<code class="sig-prename descclassname">fdm.multivariate.</code><code class="sig-name descname">jvp</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">v</em>, <em class="sig-param">method=&lt;fdm.fdm.FDM object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fdm/multivariate.html#jvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fdm.multivariate.jvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a Jacobian-vector product, also known as a directional
+derivative.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>function</em>) – Function to compute Jacobian of.</p></li>
+<li><p><strong>v</strong> (<em>tensor</em>) – Vector to multiply Jacobian with. Should be of the same form
+as the arguments supplied to <cite>f</cite>.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="fdm.fdm.html#fdm.fdm.FDM" title="fdm.fdm.FDM"><code class="xref py py-class docutils literal notranslate"><span class="pre">fdm.FDM</span></code></a>, optional) – Finite difference method to use.
+Defaults to <a class="reference internal" href="#fdm.multivariate.default_adaptive_method" title="fdm.multivariate.default_adaptive_method"><code class="xref py py-data docutils literal notranslate"><span class="pre">multivariate.default_adaptive_method</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Jacobian of <cite>f</cite> multiplied by <cite>v</cite>, or directional</dt><dd><p>derivative in the direction <cite>v</cite>.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -303,11 +306,19 @@ use for directional derivative computation. Defaults to
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -318,7 +329,6 @@ use for directional derivative computation. Defaults to
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

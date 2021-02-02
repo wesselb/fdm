@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> fdm
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> fdm
           
 
           
@@ -75,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,6 +92,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -128,7 +131,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -148,53 +151,60 @@
            <div itemprop="articleBody">
             
   <h1>Source code for fdm.fdm</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
-
+<span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FDM&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;forward_fdm&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;backward_fdm&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;central_fdm&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;default_condition&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FDM&quot;</span><span class="p">,</span> <span class="s2">&quot;forward_fdm&quot;</span><span class="p">,</span> <span class="s2">&quot;backward_fdm&quot;</span><span class="p">,</span> <span class="s2">&quot;central_fdm&quot;</span><span class="p">]</span>
+
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">default_condition</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1">#: Default condition number.</span>
+
+<span class="k">def</span> <span class="nf">_get_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
 
 
-<span class="k">def</span> <span class="nf">_default_bound_estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">default_condition</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># No function is given. Just assume a constant approximation of 1.</span>
-        <span class="k">return</span> <span class="n">condition</span>
-    <span class="k">return</span> <span class="n">condition</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-
-
-<span class="k">def</span> <span class="nf">_adaptive_bound_estimator</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">adapt</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># Estimate the `order`th derivative of the function `f` at `x`.</span>
-        <span class="n">estimate_derivative</span> <span class="o">=</span> \
-            <span class="n">method</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
-
-        <span class="c1"># Adaptive estimator:</span>
-        <span class="k">def</span> <span class="nf">estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition_</span><span class="o">=</span><span class="n">condition</span><span class="p">):</span>
-            <span class="c1"># If no function is supplied, fall back to the default estimator.</span>
-            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">_default_bound_estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition_</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">estimate_derivative</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)))</span>
-
+<span class="k">def</span> <span class="nf">_ensure_float</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">_get_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Non-adaptive estimator:</span>
-        <span class="k">def</span> <span class="nf">estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition_</span><span class="o">=</span><span class="n">condition</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">_default_bound_estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition_</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">estimator</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FDM"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.FDM">[docs]</a><span class="k">class</span> <span class="nc">FDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_eps</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">_get_dtype</span><span class="p">(</span><span class="n">_ensure_float</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">eps</span>
+
+
+<span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_coefs_mults</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">deriv</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">deriv</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1"># Compute coefficients.</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">g</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">order</span><span class="p">)])</span>
+        <span class="n">coefs</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">inv</span><span class="p">()[:,</span> <span class="n">deriv</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">deriv</span><span class="p">)</span>
+
+        <span class="c1"># Compute parts of the FDM.</span>
+        <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coefs</span><span class="p">])</span>
+        <span class="n">df_magnitude_mult</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">g</span> <span class="o">**</span> <span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="n">grid</span><span class="p">)])</span>
+            <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">f_error_mult</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coefs</span><span class="p">]))</span>
+
+        <span class="c1"># Save result.</span>
+        <span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">coefs</span><span class="p">,</span> <span class="n">df_magnitude_mult</span><span class="p">,</span> <span class="n">f_error_mult</span>
+
+        <span class="k">return</span> <span class="n">coefs</span><span class="p">,</span> <span class="n">df_magnitude_mult</span><span class="p">,</span> <span class="n">f_error_mult</span>
+
+
+<div class="viewcode-block" id="FDM"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.FDM">[docs]</a><span class="k">class</span> <span class="nc">FDM</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A finite difference method.</span>
 
 <span class="sd">    Call the finite difference method with a function `f`, an input location</span>
@@ -204,125 +214,198 @@
 <span class="sd">    of `f` at `1`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        grid (list): Relative spacing of samples of the function used by the</span>
-<span class="sd">            method.</span>
-<span class="sd">        deriv (int): Order of the derivative to estimate.</span>
-<span class="sd">        bound_estimator (function, optional): Estimator that taken in a</span>
-<span class="sd">            function `f` and a location `x` and gives back an estimate of an</span>
-<span class="sd">            upper bound on the `len(grid)`th order derivative of `f` at `x`.</span>
-<span class="sd">            Defaults to :data:`.fdm._default_bound_estimator`.</span>
-<span class="sd">        factor (float, optional): Estimate of the relative error on function</span>
-<span class="sd">            evaluations as a multiple of the machine epsilon. Defaults to `1`.</span>
-<span class="sd">        step_max (float, optional): Maximum step size, to prevent very</span>
-<span class="sd">            large step sizes in the case of high-order methods. Defaults to</span>
-<span class="sd">            `0.1`.</span>
+<span class="sd">        grid (list[int] or :class:`np.ndarray`): Relative spacing of samples of the</span>
+<span class="sd">            function used by the method.</span>
+<span class="sd">        deriv (int, optional): Order of the derivative to estimate. Defaults to `1`.</span>
+<span class="sd">        bound_estimator (:class:`.fdm.FDM`, optional): A finite difference method that</span>
+<span class="sd">            is tuned to perform adaptation for this method.</span>
+<span class="sd">        condition (float, optional): Amplification of the infinity norm when passed</span>
+<span class="sd">            to the function&#39;s derivatives. Defaults to `10.0`.</span>
+<span class="sd">        factor (float, optional): Amplification of the round-off error on the function&#39;s</span>
+<span class="sd">            evaluations. Defaults to `1.0`.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        grid (list): Relative spacing of samples of the function used by the</span>
-<span class="sd">            method.</span>
+<span class="sd">        grid (:class:`np.ndarray`): Relative spacing of samples of the function used by</span>
+<span class="sd">            the method.</span>
 <span class="sd">        order (int): Order of the estimator.</span>
 <span class="sd">        deriv (int): Order of the derivative to estimate.</span>
-<span class="sd">        eps (float): Estimated absolute round-off error of the function</span>
-<span class="sd">            evaluation. This is used to estimate the step size.</span>
-<span class="sd">        bound (float): Estimated upper bound of the absolute value of the</span>
-<span class="sd">            function and all its derivatives. This is used to estimate the</span>
-<span class="sd">            step size.</span>
-<span class="sd">        coefs (list): Weighting of the samples used to estimate the derivative.</span>
-<span class="sd">        step (float): Estimate of the step size. This estimate depends on</span>
-<span class="sd">            `eps` and `bound`, and may be inadequate if `eps` and `bound` are</span>
-<span class="sd">            inadequate.</span>
-<span class="sd">        step_max (float, optional): Maximum step size, to prevent very</span>
-<span class="sd">            large step sizes in the case of high-order methods.</span>
-<span class="sd">        acc (float): Estimate of the accuracy of the method. This estimate</span>
-<span class="sd">            depends on `eps` and `bound`, and may be inadequate if `eps` and</span>
-<span class="sd">            `bound` are inadequate.</span>
+<span class="sd">        bound_estimator (function or `None`): Estimator that taken in a function `f`</span>
+<span class="sd">            and a location `x` and gives back an estimate of an upper bound on the</span>
+<span class="sd">            `len(grid)`th order derivative of `f` at `x`.</span>
+<span class="sd">        condition (float): Amplification of the infinity norm when passed to the</span>
+<span class="sd">            function&#39;s derivatives.</span>
+<span class="sd">        factor (float): Amplification of the round-off error on the function&#39;s</span>
+<span class="sd">            evaluations.</span>
+<span class="sd">        step (float or `None`): Estimate of the step size.</span>
+<span class="sd">        acc (float or `None`): Estimate of the accuracy of the method.</span>
+<span class="sd">        coefs (:class:`np.ndarray`): Weighting of the samples used to estimate the</span>
+<span class="sd">            derivative.</span>
+<span class="sd">        df_magnitude_mult (float): Multiplier associated with the truncation error.</span>
+<span class="sd">        f_error_mult (float): Multiplier associated with the round-off error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">grid</span><span class="p">,</span>
-                 <span class="n">deriv</span><span class="p">,</span>
-                 <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_default_bound_estimator</span><span class="p">,</span>
-                 <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">step_max</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">grid</span><span class="p">,</span>
+        <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">bound_estimator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">condition</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span> <span class="o">=</span> <span class="n">deriv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bound_estimator</span> <span class="o">=</span> <span class="n">bound_estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">=</span> <span class="n">factor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_max</span> <span class="o">=</span> <span class="n">step_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Order of the method must be strictly greater &#39;</span>
-                             <span class="s1">&#39;than that of the derivative.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Order of the method must be strictly greater &quot;</span>
+                <span class="s2">&quot;than that of the derivative.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="c1"># Compute coefficients.</span>
-        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
-        <span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_magnitude_mult</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f_error_mult</span> <span class="o">=</span> <span class="n">_compute_coefs_mults</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="FDM.estimate"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.FDM.estimate">[docs]</a>    <span class="k">def</span> <span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<div class="viewcode-block" id="FDM.estimate"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.FDM.estimate">[docs]</a>    <span class="k">def</span> <span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Estimate step size and accuracy of the method.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            f (function, optional): Function to estimate step size and accuracy</span>
-<span class="sd">                for. Defaults to the constant function `1`.</span>
-<span class="sd">            x (tensor, optional): Location to estimate derivative at. Defaults</span>
-<span class="sd">                to `0`.</span>
+<span class="sd">            f (function, optional): Function to estimate step size and accuracy for.</span>
+<span class="sd">                Defaults to the constant function `1`.</span>
+<span class="sd">            x (tensor, optional): Location to estimate derivative at. Defaults to `0`.</span>
+<span class="sd">            max_range (float, optional): Maximum amount to deviate from `x`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            :class:`.fdm.FDM`: Returns itself.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Obtain a sample function value, defaulting to the constant function 1.</span>
-        <span class="n">f_value</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_ensure_float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-        <span class="c1"># Get info and a tiny number to prevent divide-by-zero errors.</span>
-        <span class="n">finfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f_value</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="n">tiny</span> <span class="o">=</span> <span class="mf">1e-20</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound_estimator</span><span class="p">:</span>
+            <span class="c1"># Estimate bound.</span>
+            <span class="n">df_magnitude</span><span class="p">,</span> <span class="n">f_magnitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound_estimator</span><span class="p">(</span>
+                <span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">magnitude</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="n">max_range</span>
+            <span class="p">)</span>
 
-        <span class="c1"># Estimate the bound and epsilon.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound_estimator</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">tiny</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">finfo</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f_value</span><span class="p">))</span> <span class="o">+</span> <span class="n">tiny</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span>
+            <span class="c1"># Estimate error.</span>
+            <span class="n">f_error</span> <span class="o">=</span> <span class="n">f_magnitude</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">(</span><span class="n">f_magnitude</span><span class="p">)</span>
 
-        <span class="c1"># Estimate step size.</span>
-        <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs</span><span class="p">))</span>
-        <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound</span>
-        <span class="n">c2</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>
-        <span class="n">c2</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">*</span> <span class="n">c1</span> <span class="o">/</span> <span class="n">c2</span><span class="p">)</span> \
-                    <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
-
-        <span class="c1"># Cap the step size.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_max</span><span class="p">)</span>
-
-        <span class="c1"># Estimate accuracy.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">+</span> \
-                   <span class="n">c2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span>
+            <span class="c1"># Adaptation requires that `f_error &gt; 0` and `df_magnitude &gt; 0`. If those</span>
+            <span class="c1"># conditions are not satisfied, then default to the default step estimator.</span>
+            <span class="k">if</span> <span class="n">f_error</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">df_magnitude</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_default</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_adapt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df_magnitude</span><span class="p">,</span> <span class="n">f_error</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_default</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_step_acc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_magnitude</span><span class="p">,</span> <span class="n">f_error</span><span class="p">):</span>
+        <span class="n">c1</span> <span class="o">=</span> <span class="n">f_error</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">f_error_mult</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span>
+        <span class="n">c2</span> <span class="o">=</span> <span class="n">df_magnitude</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_magnitude_mult</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">/</span> <span class="n">c2</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">*</span> <span class="n">step</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">step</span><span class="p">,</span> <span class="n">acc</span>
+
+    <span class="k">def</span> <span class="nf">_compute_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">step</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_step_acc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">,</span> <span class="n">_eps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">step</span><span class="p">,</span> <span class="n">acc</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_default</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">df_magnitude</span><span class="p">,</span> <span class="n">f_error</span><span class="p">,</span> <span class="n">max_range</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_step_acc</span><span class="p">(</span><span class="n">df_magnitude</span><span class="p">,</span> <span class="n">f_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_limit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">max_range</span><span class="p">:</span>
+            <span class="n">step_max</span> <span class="o">=</span> <span class="n">max_range</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">&gt;</span> <span class="n">step_max</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step_max</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">step_default</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_default</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">step_max_default</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">step_default</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">&gt;</span> <span class="n">step_max_default</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step_max_default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magnitude</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute the finite difference method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            f (function, optional): Function to estimate step size and accuracy for.</span>
+<span class="sd">                Defaults to the constant function `1`.</span>
+<span class="sd">            x (tensor, optional): Location to estimate derivative at. Defaults to `0`.</span>
+<span class="sd">            step (float, optional): Step size. If not given, the step size is</span>
+<span class="sd">                automatically estimated.</span>
+<span class="sd">            magnitude (bool, optional): Estimate the magnitude of the derivative of</span>
+<span class="sd">                `f` and `f` in a neighbourhood of `x`.</span>
+<span class="sd">            max_range (float, optional): Maximum amount to deviate from `x`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float or tuple[float, float]: Estimate of the derivative if</span>
+<span class="sd">                `magnitude = False` and estimates of the magnitudes of the derivative</span>
+<span class="sd">                of `f` and `f` if `magnitude = True`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_ensure_float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Dynamically estimate the step size and accuracy given this bound.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="c1"># Dynamically estimate the step size and accuracy.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="n">max_range</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Don&#39;t do anything dynamically.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Execute finite difference estimate.</span>
-        <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="o">*</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="n">loc</span><span class="p">)</span>
-              <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">loc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span></div>
+        <span class="c1"># Perform setup for finite difference estimate.</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">g</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="n">coefs</span><span class="p">):</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="o">*</span> <span class="n">f</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="n">fs</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span>
+
+        <span class="k">if</span> <span class="n">magnitude</span><span class="p">:</span>
+            <span class="c1"># Estimate magnitude of function in neighbourhood.</span>
+            <span class="n">magnitude_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fs</span><span class="p">))</span>
+
+            <span class="c1"># Estimate magnitude of derivative in neighbourhood.</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">estimates</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">:</span>
+                <span class="n">coefs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_compute_coefs_mults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deriv</span><span class="p">)</span>
+                <span class="n">estimates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">_execute</span><span class="p">(</span><span class="n">coefs</span><span class="p">)))</span>
+            <span class="n">magnitude_df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">estimates</span><span class="p">)</span>
+
+            <span class="c1"># Return magnitudes instead of an estimate of the derivative.</span>
+            <span class="k">return</span> <span class="n">magnitude_df</span><span class="p">,</span> <span class="n">magnitude_f</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Just estimate the derivative.</span>
+            <span class="k">return</span> <span class="n">_execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="forward_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.forward_fdm">[docs]</a><span class="k">def</span> <span class="nf">forward_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">default_condition</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_construct_bound_estimator</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">adapt</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="forward_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.forward_fdm">[docs]</a><span class="k">def</span> <span class="nf">forward_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Construct a forward finite difference method.</span>
 
 <span class="sd">    Further takes in keyword arguments of the constructor of :class:`.fdm.FDM`.</span>
@@ -332,22 +415,21 @@
 <span class="sd">        deriv (int): Order of the derivative to estimate.</span>
 <span class="sd">        adapt (int, optional): Number of recursive calls to higher-order</span>
 <span class="sd">            derivatives to dynamically determine the step size. Defaults to `1`.</span>
-<span class="sd">        condition (float, optional): Amplification of the infinity norm when</span>
-<span class="sd">            passed to the function&#39;s derivatives. Defaults to</span>
-<span class="sd">            :data:`.fdm.default_condition`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        :class:`.fdm.FDM`: The desired finite difference method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">order</span><span class="p">),</span>
-               <span class="n">deriv</span><span class="p">,</span>
-               <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_adaptive_bound_estimator</span><span class="p">(</span>
-                   <span class="n">forward_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
-               <span class="p">),</span>
-               <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">order</span><span class="p">)),</span>
+        <span class="n">deriv</span><span class="p">,</span>
+        <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_construct_bound_estimator</span><span class="p">(</span>
+            <span class="n">forward_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
+        <span class="p">),</span>
+        <span class="o">**</span><span class="n">kw_args</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="backward_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.backward_fdm">[docs]</a><span class="k">def</span> <span class="nf">backward_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">default_condition</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
+<div class="viewcode-block" id="backward_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.backward_fdm">[docs]</a><span class="k">def</span> <span class="nf">backward_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Construct a backward finite difference method.</span>
 
 <span class="sd">    Further takes in keyword arguments of the constructor of :class:`.fdm.FDM`.</span>
@@ -355,24 +437,23 @@
 <span class="sd">    Args:</span>
 <span class="sd">        order (int): Order of the method.</span>
 <span class="sd">        deriv (int): Order of the derivative to estimate.</span>
-<span class="sd">        adapt (int, optional): Number of recursive calls to higher-order</span>
-<span class="sd">            derivatives to dynamically determine the step size. Defaults to `1`.</span>
-<span class="sd">        condition (float, optional): Amplification of the infinity norm when</span>
-<span class="sd">            passed to the function&#39;s derivatives. Defaults to</span>
-<span class="sd">            :data:`.fdm.default_condition`.</span>
+<span class="sd">        adapt (int, optional): Number of recursive calls to higher-order derivatives</span>
+<span class="sd">            to dynamically determine the step size. Defaults to `1`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        :class:`.fdm.FDM`: The desired finite difference method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">order</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-               <span class="n">deriv</span><span class="p">,</span>
-               <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_adaptive_bound_estimator</span><span class="p">(</span>
-                   <span class="n">backward_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
-               <span class="p">),</span>
-               <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span>
+        <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">order</span><span class="p">))],</span>
+        <span class="n">deriv</span><span class="p">,</span>
+        <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_construct_bound_estimator</span><span class="p">(</span>
+            <span class="n">backward_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
+        <span class="p">),</span>
+        <span class="o">**</span><span class="n">kw_args</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="central_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.central_fdm">[docs]</a><span class="k">def</span> <span class="nf">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">default_condition</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
+<div class="viewcode-block" id="central_fdm"><a class="viewcode-back" href="../../source/fdm.fdm.html#fdm.fdm.central_fdm">[docs]</a><span class="k">def</span> <span class="nf">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Construct a central finite difference method.</span>
 
 <span class="sd">    Further takes in keyword arguments of the constructor of :class:`.fdm.FDM`.</span>
@@ -382,19 +463,25 @@
 <span class="sd">        deriv (int): Order of the derivative to estimate.</span>
 <span class="sd">        adapt (int, optional): Number of recursive calls to higher-order</span>
 <span class="sd">            derivatives to dynamically determine the step size. Defaults to `1`.</span>
-<span class="sd">        condition (float, optional): Amplification of the infinity norm when</span>
-<span class="sd">            passed to the function&#39;s derivatives. Defaults to</span>
-<span class="sd">            :data:`.fdm.default_condition`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        :class:`.fdm.FDM`: The desired finite difference method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="p">),</span>
-               <span class="n">deriv</span><span class="p">,</span>
-               <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_adaptive_bound_estimator</span><span class="p">(</span>
-                   <span class="n">central_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
-               <span class="p">),</span>
-               <span class="o">**</span><span class="n">kw_args</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">order</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">order</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">half</span><span class="p">,</span> <span class="n">half</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">half</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">half</span><span class="p">,</span> <span class="n">half</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">FDM</span><span class="p">(</span>
+        <span class="n">grid</span><span class="p">,</span>
+        <span class="n">deriv</span><span class="p">,</span>
+        <span class="n">bound_estimator</span><span class="o">=</span><span class="n">_construct_bound_estimator</span><span class="p">(</span>
+            <span class="n">central_fdm</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">adapt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw_args</span>
+        <span class="p">),</span>
+        <span class="o">**</span><span class="n">kw_args</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -407,11 +494,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -422,7 +517,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

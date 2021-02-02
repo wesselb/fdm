@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> fdm
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> fdm
           
 
           
@@ -75,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,6 +92,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -128,7 +131,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -148,31 +151,26 @@
            <div itemprop="articleBody">
             
   <h1>Source code for fdm.multivariate</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
-
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.fdm</span> <span class="k">import</span> <span class="n">central_fdm</span>
+<span class="kn">from</span> <span class="nn">.fdm</span> <span class="kn">import</span> <span class="n">central_fdm</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;jvp&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;jacobian&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;hvp&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;default_adaptive_method&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;default_robust_method&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;gradient&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jvp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jacobian&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hvp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;default_adaptive_method&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;default_robust_method&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">default_adaptive_method</span> <span class="o">=</span> <span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">default_adaptive_method</span> <span class="o">=</span> <span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="sd">&quot;&quot;&quot;:class:`.fdm.FDM`: Default adaptive method.&quot;&quot;&quot;</span>
 
-<span class="n">default_robust_method</span> <span class="o">=</span> <span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                    <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                    <span class="n">adapt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                    <span class="n">condition</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
+<span class="n">default_robust_method</span> <span class="o">=</span> <span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">adapt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
 <span class="sd">&quot;&quot;&quot;:class:`.fdm.FDM`: Default robust method.&quot;&quot;&quot;</span>
 
 
@@ -181,13 +179,13 @@
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot index into a scalar.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot index into a scalar.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
 
 
 <div class="viewcode-block" id="gradient"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.gradient">[docs]</a><span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the gradient of a `f`.</span>
+    <span class="sd">&quot;&quot;&quot;Compute the gradient of `f`.</span>
 
 <span class="sd">    The function `f` should be scalar valued.</span>
 
@@ -202,7 +200,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">compute_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span>  <span class="c1"># Query the object once to get the dtype.</span>
+        <span class="c1"># Query the object once to get the data type.</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
 
         <span class="c1"># Handle edge case where `x` is a scalar.</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="p">():</span>
@@ -247,7 +246,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">compute_jvp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span>  <span class="c1"># Query the object once to get the dtype.</span>
+        <span class="c1"># Query the object once to get the data type.</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
         <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eps</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">v</span><span class="p">),</span> <span class="n">zero</span><span class="p">)</span>
 
@@ -269,8 +269,8 @@
     <span class="k">def</span> <span class="nf">compute_jacobian</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">size_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Size of input.</span>
 
-        <span class="c1"># Query the object once to get the dtype and output size.</span>
-        <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="c1"># Query the object once to get the data type and output size.</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">fx</span><span class="o">.</span><span class="n">dtype</span>
         <span class="n">size_out</span> <span class="o">=</span> <span class="n">fx</span><span class="o">.</span><span class="n">size</span>
 
@@ -287,10 +287,7 @@
     <span class="k">return</span> <span class="n">compute_jacobian</span></div>
 
 
-<div class="viewcode-block" id="hvp"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.hvp">[docs]</a><span class="k">def</span> <span class="nf">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
-        <span class="n">v</span><span class="p">,</span>
-        <span class="n">jac_method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">,</span>
-        <span class="n">dir_method</span><span class="o">=</span><span class="n">default_robust_method</span><span class="p">):</span>
+<div class="viewcode-block" id="hvp"><a class="viewcode-back" href="../../source/fdm.multivariate.html#fdm.multivariate.hvp">[docs]</a><span class="k">def</span> <span class="nf">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">jac_method</span><span class="o">=</span><span class="n">default_adaptive_method</span><span class="p">,</span> <span class="n">dir_method</span><span class="o">=</span><span class="n">default_robust_method</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute a Hessian-vector product.</span>
 
 <span class="sd">    Args:</span>
@@ -320,11 +317,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -335,7 +340,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

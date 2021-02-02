@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Application Programming Interface" href="api.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> fdm
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fdm
           
 
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -104,6 +106,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -142,7 +145,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>FDM: Finite Difference Methods</li>
     
@@ -165,10 +168,9 @@
             
   <div class="section" id="fdm-finite-difference-methods">
 <h1><a class="reference external" href="http://github.com/wesselb/fdm">FDM: Finite Difference Methods</a><a class="headerlink" href="#fdm-finite-difference-methods" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://travis-ci.org/wesselb/fdm"><img alt="Build" src="https://travis-ci.org/wesselb/fdm.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/github/wesselb/fdm?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master&amp;service=github" /></a> <a class="reference external" href="https://wesselb.github.io/fdm"><img alt="Latest Docs" src="https://img.shields.io/badge/docs-latest-blue.svg" /></a></p>
-<p>FDM estimates derivatives with finite differences.</p>
-<p>See also <a class="reference external" href="https://github.com/invenia/FDM.jl">FDM.jl</a>.</p>
-<p>See the <a class="reference external" href="https://wesselb.github.io/fdm">docs</a>.</p>
+<p><a class="reference external" href="https://github.com/wesselb/fdm/actions?query=workflow%3ACI"><img alt="CI" src="https://github.com/wesselb/fdm/workflows/CI/badge.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/github/wesselb/fdm?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/wesselb/fdm/badge.svg?branch=master&amp;service=github" /></a> <a class="reference external" href="https://wesselb.github.io/fdm"><img alt="Latest Docs" src="https://img.shields.io/badge/docs-latest-blue.svg" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a></p>
+<p>FDM estimates derivatives with finite differences. See also
+<a class="reference external" href="https://github.com/JuliaDiff/FiniteDifferences.jl">FiniteDifferences.jl</a>.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="#installation">Installation</a></p></li>
 <li><p><a class="reference external" href="#multivariate-derivatives">Multivariate Derivatives</a></p>
@@ -186,12 +188,8 @@ Framework</a></p></li>
 </ul>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The package is tested for Python 2.7 and Python 3.6, which are the
-versions recommended to use. To install the package, use the following
-sequence of commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">wesselb</span><span class="o">/</span><span class="n">fdm</span>
-<span class="n">cd</span> <span class="n">fdm</span>
-<span class="n">make</span> <span class="n">install</span>
+<p>FDM requires Python 3.6 or higher.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install fdm
 </pre></div>
 </div>
 </div>
@@ -201,14 +199,14 @@ sequence of commands:</p>
 </pre></div>
 </div>
 <p>For the purpose of illustration, let us consider a quadratic function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; a = np.random.randn(3, 3); a = a @ a.T
-&gt;&gt;&gt; a
-array([[ 3.57224794,  0.22646662, -1.80432262],
-       [ 0.22646662,  4.72596213,  3.46435663],
-       [-1.80432262,  3.46435663,  3.70938152]])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[ 3.57224794,  0.22646662, -1.80432262],</span>
+<span class="go">       [ 0.22646662,  4.72596213,  3.46435663],</span>
+<span class="go">       [-1.80432262,  3.46435663,  3.70938152]])</span>
 
-&gt;&gt;&gt; def f(x):
-...     return 0.5 * x @ a @ x
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">@</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
 </pre></div>
 </div>
 <p>Consider the following input value:</p>
@@ -217,39 +215,39 @@ array([[ 3.57224794,  0.22646662, -1.80432262],
 </div>
 <div class="section" id="gradients">
 <h3>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; grad = gradient(f)
-&gt;&gt;&gt; grad(x)
-array([-1.38778668, 20.07146076, 16.25253519])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([-1.38778668, 20.07146076, 16.25253519])</span>
 
-&gt;&gt;&gt; a @ x
-array([-1.38778668, 20.07146076, 16.25253519])
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+<span class="go">array([-1.38778668, 20.07146076, 16.25253519])</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="jacobians">
 <h3>Jacobians<a class="headerlink" href="#jacobians" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; jac = jacobian(f)
-&gt;&gt;&gt; jac(x)
-array([[-1.38778668, 20.07146076, 16.25253519]])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[-1.38778668, 20.07146076, 16.25253519]])</span>
 
-&gt;&gt;&gt; a @ x
-array([-1.38778668, 20.07146076, 16.25253519])
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
+<span class="go">array([-1.38778668, 20.07146076, 16.25253519])</span>
 </pre></div>
 </div>
 <p>But <code class="docutils literal notranslate"><span class="pre">jacobian</span></code> also works for multi-valued functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; def f2(x):
-...     return a @ x
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">x</span>
 
-&gt;&gt;&gt; jac2 = jacobian(f2)
-&gt;&gt;&gt; jac2(x)
-array([[ 3.57224794,  0.22646662, -1.80432262],
-       [ 0.22646662,  4.72596213,  3.46435663],
-       [-1.80432262,  3.46435663,  3.70938152]])
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[ 3.57224794,  0.22646662, -1.80432262],</span>
+<span class="go">       [ 0.22646662,  4.72596213,  3.46435663],</span>
+<span class="go">       [-1.80432262,  3.46435663,  3.70938152]])</span>
 
-&gt;&gt;&gt; a
-array([[ 3.57224794,  0.22646662, -1.80432262],
-       [ 0.22646662,  4.72596213,  3.46435663],
-       [-1.80432262,  3.46435663,  3.70938152]])
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[ 3.57224794,  0.22646662, -1.80432262],</span>
+<span class="go">       [ 0.22646662,  4.72596213,  3.46435663],</span>
+<span class="go">       [-1.80432262,  3.46435663,  3.70938152]])</span>
 </pre></div>
 </div>
 </div>
@@ -268,23 +266,23 @@ array([[ 3.57224794,  0.22646662, -1.80432262],
 </div>
 <p>In the multivariate case, <code class="docutils literal notranslate"><span class="pre">jvp</span></code> generalises to Jacobian-vector
 products:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = jvp(f2, v)
-&gt;&gt;&gt; prod(x)
-array([0.65897811, 5.37386023, 3.77301973])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span> <span class="o">=</span> <span class="n">jvp</span><span class="p">(</span><span class="n">f2</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([0.65897811, 5.37386023, 3.77301973])</span>
 
-&gt;&gt;&gt; a @ v
-array([0.65897811, 5.37386023, 3.77301973])
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">@</span> <span class="n">v</span>
+<span class="go">array([0.65897811, 5.37386023, 3.77301973])</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="hessian-vector-products">
 <h3>Hessian-Vector Products<a class="headerlink" href="#hessian-vector-products" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; prod = hvp(f, v)
-&gt;&gt;&gt; prod(x)
-array([[0.6589781 , 5.37386023, 3.77301973]])
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span> <span class="o">=</span> <span class="n">hvp</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[0.6589781 , 5.37386023, 3.77301973]])</span>
 
-&gt;&gt;&gt; 0.5 * (a + a.T) @ v
-array([0.65897811, 5.37386023, 3.77301973])
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">v</span>
+<span class="go">array([0.65897811, 5.37386023, 3.77301973])</span>
 </pre></div>
 </div>
 </div>
@@ -295,48 +293,47 @@ array([0.65897811, 5.37386023, 3.77301973])
 </pre></div>
 </div>
 <p>Let’s try to estimate the first derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
-second-order method, where we know that <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> is well conditioned.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">4.307577627926662e-10</span>
+second-order method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">-1.2914319613699377e-09</span>
 </pre></div>
 </div>
 <p>And let’s try to estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code>
 with a third-order method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">-1.263876664436836e-07</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">1.6342919018086377e-08</span>
 </pre></div>
 </div>
 <p>Hm. Let’s check the accuracy of this third-order method. The step size
-and accuracy of the method are computed upon calling <code class="docutils literal notranslate"><span class="pre">FDM.estimate()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
-<span class="go">8.733476581980376e-06</span>
+and accuracy of the method are computed upon calling <code class="docutils literal notranslate"><span class="pre">FDM.estimate</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">acc</span>
+<span class="go">5.476137293912896e-06</span>
 </pre></div>
 </div>
 <p>We might want a little more accuracy. Let’s check the accuracy of a
 fifth-order method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span><span class="o">.</span><span class="n">acc</span>
-<span class="go">7.343652562575155e-10</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">acc</span>
+<span class="go">7.343652562575157e-10</span>
 </pre></div>
 </div>
 <p>And let’s estimate the second derivative of <code class="docutils literal notranslate"><span class="pre">np.sin</span></code> at <code class="docutils literal notranslate"><span class="pre">1</span></code> with a
 fifth-order method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">-9.145184609593571e-11</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">-1.7121615236703747e-10</span>
 </pre></div>
 </div>
 <p>Hooray!</p>
-<p>Finally, let us verify that increasing the order indeed reliably
-increases the accuracy.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-<span class="gp">... </span>     <span class="k">print</span><span class="p">(</span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">-1.263876664436836e-07</span>
-<span class="go">6.341286606925678e-09</span>
-<span class="go">-9.145184609593571e-11</span>
-<span class="go">2.7335911312320604e-12</span>
-<span class="go">6.588063428125679e-13</span>
-<span class="go">2.142730437526552e-13</span>
-<span class="go">2.057243264630415e-13</span>
-<span class="go">8.570921750106208e-14</span>
+<p>Finally, let us verify that increasing the order generally increases the
+accuracy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+<span class="gp">... </span>     <span class="nb">print</span><span class="p">(</span><span class="n">central_fdm</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">1.6342919018086377e-08</span>
+<span class="go">8.604865264771888e-09</span>
+<span class="go">-1.7121615236703747e-10</span>
+<span class="go">8.558931341440257e-12</span>
+<span class="go">-2.147615418834903e-12</span>
+<span class="go">6.80566714095221e-13</span>
+<span class="go">-1.2434497875801753e-14</span>
 </pre></div>
 </div>
 </div>
@@ -395,11 +392,19 @@ the implementation of <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Wessel Bruinsma
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -410,7 +415,6 @@ the implementation of <code class="docutils literal notranslate"><span class="pr
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
