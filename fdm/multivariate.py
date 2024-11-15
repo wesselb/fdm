@@ -48,7 +48,7 @@ def gradient(f, method=default_adaptive_method):
 
     def compute_gradient(x):
         # Query the object once to get the data type.
-        dtype = np.array(f(x), copy=False).dtype
+        dtype = np.asarray(f(x)).dtype
 
         # Handle edge case where `x` is a scalar.
         if np.shape(x) == ():
@@ -94,7 +94,7 @@ def jvp(f, v, method=default_adaptive_method):
 
     def compute_jvp(x):
         # Query the object once to get the data type.
-        dtype = np.array(f(x), copy=False).dtype
+        dtype = np.asarray(f(x)).dtype
         zero = np.array(0).astype(dtype)
         return method(lambda eps: f(x + eps * v), zero)
 
@@ -117,7 +117,7 @@ def jacobian(f, method=default_adaptive_method):
         size_in = np.size(x)  # Size of input.
 
         # Query the object once to get the data type and output size.
-        fx = np.array(f(x), copy=False)
+        fx = np.asarray(f(x))
         dtype = fx.dtype
         size_out = fx.size
 

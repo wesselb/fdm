@@ -1,4 +1,5 @@
 import logging
+import math
 
 import sympy as sp
 import numpy as np
@@ -9,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def _get_dtype(x):
-    return np.array(x, copy=False).dtype
+    return np.asarray(x).dtype
 
 
 def _ensure_float(x):
@@ -35,13 +36,13 @@ def _compute_coefs_mults(grid, deriv):
     except KeyError:
         # Compute coefficients.
         mat = sp.Matrix([[g ** i for g in grid] for i in range(order)])
-        coefs = mat.inv()[:, deriv] * np.math.factorial(deriv)
+        coefs = mat.inv()[:, deriv] * math.factorial(deriv)
 
         # Compute parts of the FDM.
         coefs = np.array([float(c) for c in coefs])
         df_magnitude_mult = float(
             sum([abs(c * g ** order) for c, g in zip(coefs, grid)])
-            / np.math.factorial(order)
+            / math.factorial(order)
         )
         f_error_mult = float(sum([abs(c) for c in coefs]))
 
