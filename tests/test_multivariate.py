@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from fdm import central_fdm, gradient, jvp, jacobian, hvp
-from fdm.multivariate import _get_at_index
 from .util import approx
+from fdm import central_fdm, gradient, hvp, jacobian, jvp
+from fdm.multivariate import _get_at_index
 
 
 def test_get_index():
@@ -14,14 +14,17 @@ def test_get_index():
 def test_gradient_vector_argument():
     m = central_fdm(10, 1)
 
+    def make_f(a):
+        def f(y):
+            return np.sum(a * y * y)
+
+        return f
+
     for a, x in zip(
         [np.random.randn(), np.random.randn(3), np.random.randn(3, 3)],
         [np.random.randn(), np.random.randn(3), np.random.randn(3, 3)],
     ):
-
-        def f(y):
-            return np.sum(a * y * y)
-
+        f = make_f(a)
         approx(2 * a * x, gradient(f, m)(x))
 
 

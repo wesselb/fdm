@@ -39,7 +39,7 @@ For the purpose of illustration, let us consider a quadratic function:
 array([[ 3.57224794,  0.22646662, -1.80432262],
        [ 0.22646662,  4.72596213,  3.46435663],
        [-1.80432262,  3.46435663,  3.70938152]])
-       
+
 >>> def f(x):
 ...     return 0.5 * x @ a @ x
 ```
@@ -83,7 +83,7 @@ But `jacobian` also works for multi-valued functions.
 array([[ 3.57224794,  0.22646662, -1.80432262],
        [ 0.22646662,  4.72596213,  3.46435663],
        [-1.80432262,  3.46435663,  3.70938152]])
-       
+
 >>> a
 array([[ 3.57224794,  0.22646662, -1.80432262],
        [ 0.22646662,  4.72596213,  3.46435663],
@@ -97,7 +97,7 @@ In the scalar case, `jvp` computes directional derivatives:
 ```python
 >>> v = np.array([0.5, 0.6, 0.7])  # A direction
 
->>> dir_deriv = jvp(f, v) 
+>>> dir_deriv = jvp(f, v)
 >>> dir_deriv(x)
 22.725757753354657
 
@@ -132,7 +132,7 @@ array([0.65897811, 5.37386023, 3.77301973])
 >>> from fdm import central_fdm
 ```
 
-Let's try to estimate the first derivative of `np.sin` at `1` with a 
+Let's try to estimate the first derivative of `np.sin` at `1` with a
 second-order method.
 
 ```python
@@ -140,11 +140,11 @@ second-order method.
 -1.2914319613699377e-09
 ```
 
-And let's try to estimate the second derivative of `np.sin` at `1` with a 
+And let's try to estimate the second derivative of `np.sin` at `1` with a
 third-order method.
 
 ```python
->>> central_fdm(order=3, deriv=2)(np.sin, 1) + np.sin(1)  
+>>> central_fdm(order=3, deriv=2)(np.sin, 1) + np.sin(1)
 1.6342919018086377e-08
 ```
 
@@ -158,7 +158,7 @@ The step size and accuracy of the method are computed upon calling
 5.476137293912896e-06
 ```
 
-We might want a little more accuracy. Let's check the accuracy of a 
+We might want a little more accuracy. Let's check the accuracy of a
 fifth-order method.
 
 ```python
@@ -166,11 +166,11 @@ fifth-order method.
 7.343652562575157e-10
 ```
 
-And let's estimate the second derivative of `np.sin` at `1` with a 
+And let's estimate the second derivative of `np.sin` at `1` with a
 fifth-order method.
 
 ```python
->>> central_fdm(order=5, deriv=2)(np.sin, 1) + np.sin(1)   
+>>> central_fdm(order=5, deriv=2)(np.sin, 1) + np.sin(1)
 -1.7121615236703747e-10
 ```
 
@@ -206,10 +206,10 @@ def s_mul(s_y, y, a, b):
     return s_y * b, a * s_y
 ```
 
-The sensitivity `s_mul` takes in the sensitivity `s_y` of the output `y`, 
-the output `y`, and  the arguments of the function `mul`; and returns a tuple 
+The sensitivity `s_mul` takes in the sensitivity `s_y` of the output `y`,
+the output `y`, and  the arguments of the function `mul`; and returns a tuple
 containing the sensitivities with respect to `a` and `b`.
-Then function `check_sensitivity` can be used to assert that the 
+Then function `check_sensitivity` can be used to assert that the
 implementation of `s_mul` is correct:
 
 ```python
@@ -228,6 +228,6 @@ def s_mul_wrong(s_y, y, a, b):
 Then `check_sensitivity` should throw an `AssertionError`:
 
 ```python
->>> check_sensitivity(mul, s_mul, (2, 3)) 
+>>> check_sensitivity(mul, s_mul, (2, 3))
 AssertionError: Sensitivity of argument 2 of function "mul" did not match numerical estimate.
 ```

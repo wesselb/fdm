@@ -31,6 +31,13 @@ def _get_at_index(x, i):
         return x[np.unravel_index(i, x.shape)]
 
 
+def _make_get_at_index(f, i):
+    def g(y):
+        return _get_at_index(f(y), i)
+
+    return g
+
+
 def gradient(f, method=default_adaptive_method):
     """Compute the gradient of `f`.
 
@@ -126,7 +133,7 @@ def jacobian(f, method=default_adaptive_method):
 
         # Loop over outputs to fill the Jacobian.
         for i in range(size_out):
-            grad = gradient(lambda y: _get_at_index(f(y), i), method)
+            grad = gradient(_make_get_at_index(f, i), method)
             jac[i, :] = np.reshape(grad(x), size_in)
 
         return jac

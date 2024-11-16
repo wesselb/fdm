@@ -2,16 +2,17 @@ import logging
 
 import numpy as np
 
-from .multivariate import jvp, default_adaptive_method
+from .multivariate import default_adaptive_method, jvp
 
 __all__ = ["approx_equal", "check_sensitivity"]
 
 log = logging.getLogger(__name__)
 
+_float_eps = np.finfo(float).eps
+_float_eps_sqrt = np.sqrt(_float_eps)
 
-def approx_equal(
-    x, y, eps_abs=1e2 * np.finfo(float).eps, eps_rel=np.sqrt(np.finfo(float).eps)
-):
+
+def approx_equal(x, y, eps_abs=1e2 * _float_eps, eps_rel=_float_eps_sqrt):
     """Check whether `x` and `y` are approximately equal.
 
     Let `eps_z = eps_abs / eps_rel`. Call `x` and `y` small if
@@ -32,13 +33,20 @@ def approx_equal(
     return np.all(np.abs(x - y) <= eps_abs + eps_rel * np.maximum(np.abs(x), np.abs(y)))
 
 
+def _make_f_i(f, i, args, kw_args):
+    def f_i(x):
+        return f(*(args[:i] + (x,) + args[i + 1 :]), **kw_args)
+
+    return f_i
+
+
 def check_sensitivity(
     f,
     s_f,
     args,
     kw_args=None,
-    eps_abs=1e4 * np.finfo(float).eps,
-    eps_rel=1e1 * np.sqrt(np.finfo(float).eps),
+    eps_abs=1e4 * _float_eps,
+    eps_rel=1e1 * _float_eps_sqrt,
     method=default_adaptive_method,
 ):
     """Check the sensitivity of a function.
@@ -85,8 +93,7 @@ def check_sensitivity(
     # Walk through the arguments.
     for i in range(len(args)):
         # Create a function that only varies the `i`th argument.
-        def f_i(x):
-            return f(*(args[:i] + (x,) + args[i + 1 :]), **kw_args)
+        f_i = _make_f_i(f, i, args, kw_args)
 
         # Pick a random direction.
         v = np.random.randn(*np.array(args[i]).shape)

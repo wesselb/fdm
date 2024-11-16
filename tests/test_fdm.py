@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from fdm import forward_fdm, backward_fdm, central_fdm, FDM
 from .util import approx
+from fdm import FDM, backward_fdm, central_fdm, forward_fdm
 
 
 def test_construction():
@@ -43,7 +43,7 @@ def cosc(x):
         (np.cos, 1, -np.sin(1), 7.5e-13, 5e-14),
         (np.sinc, 0, 0, 5e-12, 5e-14),
         # `cosc` is hard.
-        (cosc, 0, -np.pi ** 2 / 3, 5e-10, 5e-11),
+        (cosc, 0, -(np.pi**2) / 3, 5e-10, 5e-11),
     ],
 )
 @pytest.mark.parametrize(
@@ -93,7 +93,7 @@ def test_adaptation():
         return 1 / x
 
     def df(x):
-        return -1 / x ** 2
+        return -1 / x**2
 
     err1 = np.abs(forward_fdm(3, 1, adapt=0)(f, 1e-3) - df(1e-3))
     err2 = np.abs(forward_fdm(3, 1, adapt=2)(f, 1e-3) - df(1e-3))
@@ -142,8 +142,10 @@ def test_zero_bound_fixed():
 
 def test_zero_bound_zero_error_not_fixed():
     m = central_fdm(2, 1)
-    f = lambda _: 0
     x = 0
+
+    def f(_):
+        return f
 
     assert m.bound_estimator(f, x) == 0
     assert m.bound_estimator(f, x, magnitude=True)[0] == 0
@@ -154,8 +156,10 @@ def test_zero_bound_zero_error_not_fixed():
 
 def test_step_limiting():
     m = central_fdm(2, 1)
-    f = lambda x: np.exp(1e-3 * x)
     x = 0
+
+    def f(x):
+        return np.exp(1e-3 * x)
 
     step_max = m.estimate().step * 1000
     assert m.estimate(f, x).step == step_max
@@ -200,4 +204,3 @@ def test_range_max(factor):
     f.evals_x.clear()
     central_fdm(8, 1, adapt=2)(f, 1, max_range=true_range / factor)
     approx(f.true_range(1), true_range / factor)
-

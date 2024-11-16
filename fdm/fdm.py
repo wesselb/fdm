@@ -1,8 +1,9 @@
 import logging
 import math
+from typing import Dict, Tuple
 
-import sympy as sp
 import numpy as np
+import sympy as sp
 
 __all__ = ["FDM", "forward_fdm", "backward_fdm", "central_fdm"]
 
@@ -24,7 +25,7 @@ def _eps(x):
     return np.finfo(_get_dtype(_ensure_float(x))).eps
 
 
-_cache = {}
+_cache: Dict[Tuple[Tuple[int, ...], int], Tuple[np.ndarray, float, float]] = {}
 
 
 def _compute_coefs_mults(grid, deriv):
@@ -35,13 +36,13 @@ def _compute_coefs_mults(grid, deriv):
         return _cache[cache_key]
     except KeyError:
         # Compute coefficients.
-        mat = sp.Matrix([[g ** i for g in grid] for i in range(order)])
+        mat = sp.Matrix([[g**i for g in grid] for i in range(order)])
         coefs = mat.inv()[:, deriv] * math.factorial(deriv)
 
         # Compute parts of the FDM.
         coefs = np.array([float(c) for c in coefs])
         df_magnitude_mult = float(
-            sum([abs(c * g ** order) for c, g in zip(coefs, grid)])
+            sum([abs(c * g**order) for c, g in zip(coefs, grid)])
             / math.factorial(order)
         )
         f_error_mult = float(sum([abs(c) for c in coefs]))
@@ -220,7 +221,7 @@ class FDM:
 
         def _execute(coefs):
             ws = [c * f for c, f in zip(coefs, fs)]
-            return np.sum(ws, axis=0) / self.step ** self.deriv
+            return np.sum(ws, axis=0) / self.step**self.deriv
 
         if magnitude:
             # Estimate magnitude of function in neighbourhood.
@@ -273,7 +274,7 @@ def forward_fdm(order, deriv, adapt=1, **kw_args):
         bound_estimator=_construct_bound_estimator(
             forward_fdm, order, adapt, **kw_args
         ),
-        **kw_args
+        **kw_args,
     )
 
 
@@ -297,7 +298,7 @@ def backward_fdm(order, deriv, adapt=1, **kw_args):
         bound_estimator=_construct_bound_estimator(
             backward_fdm, order, adapt, **kw_args
         ),
-        **kw_args
+        **kw_args,
     )
 
 
@@ -328,5 +329,5 @@ def central_fdm(order, deriv, adapt=1, **kw_args):
         bound_estimator=_construct_bound_estimator(
             central_fdm, order, adapt, **kw_args
         ),
-        **kw_args
+        **kw_args,
     )
