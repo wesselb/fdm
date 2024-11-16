@@ -1,2 +1,93 @@
 [build-system]
-requires = ['setuptools>=41.0', 'wheel>=0.33', 'numpy>=1.16', 'cython>=0.29']
+requires = ["hatchling>=1.8.0", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fdm"
+description="Estimate derivatives with finite differences"
+authors=[
+    {name="Wessel Bruinsma", email="wessel.p.bruinsma@gmail.com"},
+]
+license = {text= "MIT"}
+readme = "README.md"
+keywords = ["finite-difference", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
+]
+dynamic = ["version"]
+
+requires-python = ">=3.6"
+dependencies = [
+    "numpy>=1.16",
+    "sympy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "numpy",
+    "pytest>=6",
+    "pytest-cov",
+    "coveralls",
+    "pre-commit",
+    "IPython",
+    "ghp-import",
+    "wheel",
+    "build",
+    "tox",
+    "jupyter-book",
+    "mypy",
+    "pyright>=1.1.331",
+    "ruff",
+    "sybil",
+]
+
+[project.urls]
+repository = "https://github.com/wesselb/fdm"
+
+[tool.hatch.build]
+include = ["fdm*"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "fdm/_version.py"
+
+# Development tools
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest --verbose test"
+source = ["fdm"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/", "fdm", "docs"]
+addopts = [
+    "-ra",
+    "-p",
+    "no:doctest",
+]
+minversion = "6.0"
+
+[tool.ruff]
+src = ["fdm"]
+target-version = "py38"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "D410",
+    "E", "W",  # pycodestyle
+    "F",  # Pyflakes
+    "I",  # isort
+    "SIM",  # flake8-simplify
+    "UP",  # pyupgrade
+]
+ignore = ["F811", "B018"]
+
+[tool.ruff.lint.isort]
+known-local-folder = ["fdm"]
+
+[tool.ruff.format]
+docstring-code-format = true

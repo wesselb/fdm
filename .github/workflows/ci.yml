@@ -8,8 +8,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [3.8, 3.11, 3.12]
+        python-version: [3.8, 3.9, "3.10", 3.11, 3.12]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -18,26 +19,24 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt-get install gfortran
           python -m pip install --upgrade pip
-          pip install --no-cache-dir -U -r requirements.txt | cat
-      - name: Test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
-          COVERALLS_PARALLEL: true
+          python -m pip install --upgrade --no-cache-dir -e '.[dev]'
+      - name: Test py${{ matrix.python-version }}
         run: |
           pytest -v --cov=fdm --cov-report term-missing
-          coveralls
-  coveralls:
+      - name: Coveralls parallel
+        uses: coverallsapp/github-action@v2
+        with:
+          flag-name: run-${{ join(matrix.*, '-') }}
+          parallel: true
+
+  finish:
     name: Finish coverage
     needs: test
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    container: python:3-slim
     steps:
-    - name: Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Coveralls finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
