@@ -145,7 +145,7 @@ def test_zero_bound_zero_error_not_fixed():
     x = 0
 
     def f(_):
-        return f
+        return 0
 
     assert m.bound_estimator(f, x) == 0
     assert m.bound_estimator(f, x, magnitude=True)[0] == 0
